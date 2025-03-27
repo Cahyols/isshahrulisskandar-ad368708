@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Briefcase, Coffee, IceCream, Zap, PenTool, Laptop } from 'lucide-react';
+import { Briefcase, Coffee, IceCream, Zap, PenTool, Laptop, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import ProjectDialog from '@/components/ProjectDialog';
 
 interface Experience {
   id: string;
@@ -134,6 +133,7 @@ const experiences: Experience[] = [
 const ExperienceSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
+  const [expandedExperience, setExpandedExperience] = useState<string | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -154,21 +154,13 @@ const ExperienceSection = () => {
     };
   }, []);
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.3
-      }
-    }
+  const toggleExpanded = (id: string) => {
+    setExpandedExperience(expandedExperience === id ? null : id);
   };
 
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-  };
+  const filteredExperiences = activeTab === 'all' 
+    ? experiences 
+    : experiences.filter(exp => exp.category === activeTab);
 
   return (
     <section id="experience" className="py-20 relative bg-secondary/50">
@@ -196,100 +188,70 @@ const ExperienceSection = () => {
             </TabsList>
           </div>
 
-          <TabsContent value="all">
-            <ExperienceGrid 
-              experiences={experiences} 
-              isVisible={isVisible} 
-              container={container} 
-              item={item} 
-            />
-          </TabsContent>
-          
-          <TabsContent value="engineering">
-            <ExperienceGrid 
-              experiences={experiences.filter(exp => exp.category === 'engineering')} 
-              isVisible={isVisible} 
-              container={container} 
-              item={item} 
-            />
-          </TabsContent>
-          
-          <TabsContent value="service">
-            <ExperienceGrid 
-              experiences={experiences.filter(exp => exp.category === 'service')} 
-              isVisible={isVisible} 
-              container={container} 
-              item={item} 
-            />
-          </TabsContent>
-          
-          <TabsContent value="support">
-            <ExperienceGrid 
-              experiences={experiences.filter(exp => exp.category === 'support')} 
-              isVisible={isVisible} 
-              container={container} 
-              item={item} 
-            />
+          <TabsContent value={activeTab} className="mt-8 relative">
+            <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-border transform -translate-x-1/2 md:block hidden"></div>
+            
+            <div className="space-y-16 relative">
+              {filteredExperiences.map((exp, index) => (
+                <motion.div 
+                  key={exp.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ 
+                    opacity: isVisible ? 1 : 0, 
+                    y: isVisible ? 0 : 50 
+                  }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: isVisible ? 0.1 * index : 0 
+                  }}
+                  className={`relative ${index % 2 === 0 ? 'md:pr-12 md:text-right md:ml-0 ml-12' : 'md:pl-12 md:text-left md:mr-0 ml-12'} md:ml-0`}
+                >
+                  <div className="absolute md:left-1/2 left-0 md:transform md:-translate-x-1/2 -translate-x-16 w-8 h-8 rounded-full bg-background border-2 border-accent flex items-center justify-center z-10">
+                    {exp.icon}
+                  </div>
+                  
+                  <div 
+                    className={`bg-card border border-border rounded-lg shadow-lg p-6 hover:border-accent/50 transition-all cursor-pointer ${
+                      index % 2 === 0 ? 'md:mr-8' : 'md:ml-8'
+                    } md:max-w-[calc(50%-4rem)] w-full`}
+                    onClick={() => toggleExpanded(exp.id)}
+                  >
+                    <div className="flex flex-col">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-sm font-medium text-accent">{exp.period}</span>
+                        {expandedExperience === exp.id ? 
+                          <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        }
+                      </div>
+                      
+                      <h3 className="text-xl font-bold mb-1">{exp.title}</h3>
+                      <p className="text-muted-foreground mb-4">{exp.company} • {exp.location}</p>
+                      
+                      <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ 
+                          height: expandedExperience === exp.id ? 'auto' : 0,
+                          opacity: expandedExperience === exp.id ? 1 : 0
+                        }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <ul className="list-disc text-left ml-5 space-y-2 text-sm text-muted-foreground">
+                          {exp.description.map((item, idx) => (
+                            <li key={idx}>{item}</li>
+                          ))}
+                        </ul>
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
     </section>
-  );
-};
-
-const ExperienceGrid = ({ 
-  experiences, 
-  isVisible, 
-  container, 
-  item 
-}: { 
-  experiences: Experience[],
-  isVisible: boolean,
-  container: any,
-  item: any
-}) => {
-  return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate={isVisible ? "show" : "hidden"}
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-    >
-      {experiences.map((exp) => (
-        <motion.div key={exp.id} variants={item} className="h-full">
-          <Card className="h-full hover-lift transition-all hover:border-accent">
-            <CardHeader className="pb-2">
-              <div className="flex justify-between items-start">
-                <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10 text-accent">
-                  {exp.icon}
-                </div>
-                <Badge variant="outline" className="text-xs">
-                  {exp.period}
-                </Badge>
-              </div>
-              <CardTitle className="mt-4">{exp.title}</CardTitle>
-              <CardDescription>
-                {exp.company} • {exp.location}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-sm">
-              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                {exp.description.slice(0, 3).map((item, index) => (
-                  <li key={index} className="pl-2">
-                    <span className="relative -left-2">{item}</span>
-                  </li>
-                ))}
-                {exp.description.length > 3 && (
-                  <li className="text-sm text-accent pl-2">
-                    <span className="relative -left-2">+ {exp.description.length - 3} more responsibilities</span>
-                  </li>
-                )}
-              </ul>
-            </CardContent>
-          </Card>
-        </motion.div>
-      ))}
-    </motion.div>
   );
 };
 

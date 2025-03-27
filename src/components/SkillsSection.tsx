@@ -1,14 +1,11 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronsUpDown, Code, Database, Figma, FileCode, Laptop, Layers, PenTool, Server, Settings, Smartphone, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface Skill {
   name: string;
@@ -213,43 +210,40 @@ const SkillsSection = () => {
             >
               {displayedSkills.map((skill) => (
                 <motion.div key={skill.name} variants={item}>
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <Card className="hover-lift">
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-center mb-3">
-                            <div className="flex items-center gap-2">
-                              <div className="h-8 w-8 flex items-center justify-center rounded-full bg-accent/10 text-accent">
-                                {skill.icon}
-                              </div>
-                              <h3 className="font-medium">{skill.name}</h3>
-                            </div>
-                            <Badge variant="outline" className="capitalize ml-2 hidden md:flex">
-                              {skill.category}
-                            </Badge>
-                          </div>
-                          
-                          <div className="mt-4 space-y-2">
-                            <div className="flex justify-between items-center text-sm">
-                              <span className="text-muted-foreground">Proficiency</span>
-                              <span className="font-medium">{skill.proficiency}%</span>
-                            </div>
-                            <Progress 
-                              value={skill.proficiency} 
-                              className="h-2" 
-                              style={{ background: 'var(--background-secondary)' }}
-                            />
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="font-semibold">{skill.name}</h4>
-                        <p className="text-sm text-muted-foreground">{skill.description}</p>
+                  <div className="relative group overflow-hidden rounded-xl bg-gradient-to-br from-background to-muted shadow-lg border border-border hover:border-accent/50 transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    <div className="p-5 relative z-10">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10 text-accent">
+                          {skill.icon}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-lg">{skill.name}</h3>
+                          <Badge variant="outline" className="capitalize text-xs">
+                            {skill.category}
+                          </Badge>
+                        </div>
                       </div>
-                    </HoverCardContent>
-                  </HoverCard>
+                      
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {skill.description}
+                      </p>
+                      
+                      <div className="mt-2 space-y-1">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-muted-foreground">Proficiency</span>
+                          <span className="font-medium">{skill.proficiency}%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-muted/50 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-accent to-primary rounded-full"
+                            style={{ width: `${skill.proficiency}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
