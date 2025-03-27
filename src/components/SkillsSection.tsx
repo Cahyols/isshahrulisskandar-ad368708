@@ -2,53 +2,138 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Brain, Server, Code, Cpu, PencilRuler, Database, Terminal, FileText } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ChevronsUpDown, Code, Database, Figma, FileCode, Laptop, Layers, PenTool, Server, Settings, Smartphone, Wand2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Skill {
   name: string;
-  level: number;
-  category: 'programming' | 'technical' | 'tools';
+  proficiency: number;
+  category: SkillCategory;
+  description: string;
+  icon: React.ReactNode;
 }
 
-const skills: Skill[] = [
-  { name: 'Python', level: 80, category: 'programming' },
-  { name: 'C#', level: 75, category: 'programming' },
-  { name: 'JavaScript', level: 85, category: 'programming' },
-  { name: 'AngularJS', level: 80, category: 'programming' },
-  { name: 'HTML', level: 90, category: 'programming' },
-  { name: 'CSS', level: 75, category: 'programming' },
-  { name: 'Test Plan Creation', level: 85, category: 'technical' },
-  { name: 'Manual Testing', level: 90, category: 'technical' },
-  { name: 'Microsoft Azure', level: 70, category: 'tools' },
-  { name: 'Git', level: 75, category: 'tools' },
-  { name: 'MySQL', level: 80, category: 'tools' },
-  { name: 'Software Troubleshooting', level: 85, category: 'technical' },
-];
+type SkillCategory = 'frontend' | 'backend' | 'design' | 'testing' | 'tools';
 
-const skillCategories = [
-  { 
-    id: 'programming', 
-    name: 'Programming Languages', 
-    icon: <Code className="h-8 w-8" /> 
+const skills: Skill[] = [
+  {
+    name: "Python",
+    proficiency: 85,
+    category: "backend",
+    description: "Proficient in Python development including data processing, automation, and web applications.",
+    icon: <FileCode className="h-5 w-5" />
   },
-  { 
-    id: 'technical', 
-    name: 'Technical Skills', 
-    icon: <Brain className="h-8 w-8" /> 
+  {
+    name: "C#",
+    proficiency: 75,
+    category: "backend",
+    description: "Experienced with C# for application development and scripting.",
+    icon: <FileCode className="h-5 w-5" />
   },
-  { 
-    id: 'tools', 
-    name: 'Tools & Technologies', 
-    icon: <Terminal className="h-8 w-8" /> 
+  {
+    name: "JavaScript",
+    proficiency: 90,
+    category: "frontend",
+    description: "Advanced JavaScript knowledge for dynamic web applications and UI interactions.",
+    icon: <Code className="h-5 w-5" />
   },
+  {
+    name: "AngularJS",
+    proficiency: 80,
+    category: "frontend",
+    description: "Built scalable and maintainable frontend applications using Angular framework.",
+    icon: <Layers className="h-5 w-5" />
+  },
+  {
+    name: "HTML",
+    proficiency: 95,
+    category: "frontend",
+    description: "Expert level HTML markup for semantic and accessible web development.",
+    icon: <Code className="h-5 w-5" />
+  },
+  {
+    name: "CSS",
+    proficiency: 85,
+    category: "frontend",
+    description: "Advanced styling capabilities including responsive design, animations, and layouts.",
+    icon: <Wand2 className="h-5 w-5" />
+  },
+  {
+    name: "Test Plan Creation",
+    proficiency: 90,
+    category: "testing",
+    description: "Created comprehensive test plans for complex software systems ensuring quality and reliability.",
+    icon: <FileCode className="h-5 w-5" />
+  },
+  {
+    name: "Manual Testing",
+    proficiency: 95,
+    category: "testing",
+    description: "Performed detailed manual testing to identify bugs and usability issues in software systems.",
+    icon: <Laptop className="h-5 w-5" />
+  },
+  {
+    name: "Microsoft Azure",
+    proficiency: 70,
+    category: "tools",
+    description: "Deployed and managed cloud solutions using Microsoft Azure services.",
+    icon: <Server className="h-5 w-5" />
+  },
+  {
+    name: "Git",
+    proficiency: 85,
+    category: "tools",
+    description: "Proficient with Git version control for collaborative software development.",
+    icon: <FileCode className="h-5 w-5" />
+  },
+  {
+    name: "MySQL",
+    proficiency: 80,
+    category: "backend",
+    description: "Designed and managed relational databases using MySQL.",
+    icon: <Database className="h-5 w-5" />
+  },
+  {
+    name: "Software Troubleshooting",
+    proficiency: 90,
+    category: "tools",
+    description: "Diagnosed and resolved complex software issues across multiple platforms.",
+    icon: <Settings className="h-5 w-5" />
+  },
+  {
+    name: "UI/UX Basics",
+    proficiency: 75,
+    category: "design",
+    description: "Created user-friendly interfaces with focus on usability and accessibility.",
+    icon: <Figma className="h-5 w-5" />
+  },
+  {
+    name: "Mobile Testing",
+    proficiency: 85,
+    category: "testing",
+    description: "Conducted testing across various mobile devices to ensure cross-platform compatibility.",
+    icon: <Smartphone className="h-5 w-5" />
+  },
+  {
+    name: "CAD",
+    proficiency: 90,
+    category: "design",
+    description: "Expert in computer-aided design for electrical engineering applications.",
+    icon: <PenTool className="h-5 w-5" />
+  }
 ];
 
 const SkillsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('programming');
-  const filteredSkills = skills.filter(skill => skill.category === selectedCategory);
-
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const [isCollapsible, setIsCollapsible] = useState(false);
+  const [showAllSkills, setShowAllSkills] = useState(false);
+  
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -67,28 +152,28 @@ const SkillsSection = () => {
       if (element) observer.unobserve(element);
     };
   }, []);
-
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.5,
-        ease: "easeOut" 
-      } 
-    }
+  
+  const getFilteredSkills = () => {
+    if (activeTab === "all") return skills;
+    return skills.filter(skill => skill.category === activeTab);
   };
-
-  const staggerContainer = {
+  
+  const displayedSkills = showAllSkills ? getFilteredSkills() : getFilteredSkills().slice(0, 9);
+  
+  const container = {
     hidden: { opacity: 0 },
-    visible: {
+    show: {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
         delayChildren: 0.3
       }
     }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
   };
 
   return (
@@ -103,155 +188,139 @@ const SkillsSection = () => {
           <Badge className="mb-4" variant="outline">Expertise</Badge>
           <h2 className="text-3xl md:text-4xl font-bold">Technical Skills</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mt-4">
-            My technical toolkit representing my proficiency across various technologies and methodologies.
+            A comprehensive showcase of my technical capabilities, developed through academic projects, professional experience, and continuous learning.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <motion.div
-            initial="hidden"
-            animate={isVisible ? "visible" : "hidden"}
-            variants={fadeInUp}
-            className="space-y-4 md:col-span-1"
-          >
-            {skillCategories.map(category => (
-              <div 
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`p-4 rounded-xl flex items-center gap-4 cursor-pointer transition-all hover-lift
-                  ${selectedCategory === category.id 
-                    ? 'bg-accent text-accent-foreground' 
-                    : 'bg-secondary hover:bg-secondary/80'}`}
-              >
-                <div className={`${selectedCategory === category.id ? 'text-white' : 'text-accent'}`}>
-                  {category.icon}
-                </div>
-                <div>
-                  <h3 className="font-medium">{category.name}</h3>
-                  <p className="text-sm opacity-80">
-                    {skills.filter(s => s.category === category.id).length} skills
-                  </p>
-                </div>
-              </div>
-            ))}
+        <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <div className="flex justify-center mb-8">
+            <TabsList className="grid grid-cols-3 md:grid-cols-6 w-full max-w-3xl">
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="frontend">Frontend</TabsTrigger>
+              <TabsTrigger value="backend">Backend</TabsTrigger>
+              <TabsTrigger value="design">Design</TabsTrigger>
+              <TabsTrigger value="testing">Testing</TabsTrigger>
+              <TabsTrigger value="tools">Tools</TabsTrigger>
+            </TabsList>
+          </div>
 
-            <div className="hidden md:block mt-8 p-6 rounded-xl glass-panel">
-              <h3 className="text-xl font-semibold mb-4">Skill Levels</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span>Expert (90-100%)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-accent"></div>
-                  <span>Advanced (75-89%)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                  <span>Intermediate (60-74%)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <span>Beginner (0-59%)</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            animate={isVisible ? "visible" : "hidden"}
-            variants={staggerContainer}
-            className="md:col-span-3"
-          >
-            <div className="bg-secondary/50 rounded-xl p-6">
-              <h3 className="text-xl font-semibold mb-6">
-                {skillCategories.find(cat => cat.id === selectedCategory)?.name}
-              </h3>
-
-              <div className="space-y-6">
-                {filteredSkills.map((skill, index) => (
-                  <motion.div 
-                    key={skill.name}
-                    variants={fadeInUp}
-                    custom={index}
-                    className="space-y-2"
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">{skill.name}</span>
-                      <span className="text-sm text-muted-foreground">{skill.level}%</span>
-                    </div>
-                    <Progress 
-                      value={skill.level} 
-                      className="h-2"
-                      style={{
-                        background: 'var(--muted)',
-                      }}
-                      indicatorStyle={{
-                        background: getColorByLevel(skill.level),
-                        transition: 'width 1s ease-in-out',
-                      }}
-                    />
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
+          <TabsContent value={activeTab} className="mt-0">
             <motion.div
-              variants={fadeInUp}
-              className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4"
+              variants={container}
+              initial="hidden"
+              animate={isVisible ? "show" : "hidden"}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              <SkillCard
-                icon={<Cpu className="h-5 w-5" />}
-                title="Electronics"
-                description="Circuit design, microcontrollers, IoT"
-              />
-              <SkillCard
-                icon={<Server className="h-5 w-5" />}
-                title="Backend"
-                description="Node.js, APIs, databases"
-              />
-              <SkillCard
-                icon={<Database className="h-5 w-5" />}
-                title="Testing"
-                description="Test plans, QA processes"
-              />
-              <SkillCard
-                icon={<FileText className="h-5 w-5" />}
-                title="Documentation"
-                description="Technical writing, SOP creation"
-              />
+              {displayedSkills.map((skill) => (
+                <motion.div key={skill.name} variants={item}>
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <Card className="hover-lift">
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-center mb-3">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 flex items-center justify-center rounded-full bg-accent/10 text-accent">
+                                {skill.icon}
+                              </div>
+                              <h3 className="font-medium">{skill.name}</h3>
+                            </div>
+                            <Badge variant="outline" className="capitalize ml-2 hidden md:flex">
+                              {skill.category}
+                            </Badge>
+                          </div>
+                          
+                          <div className="mt-4 space-y-2">
+                            <div className="flex justify-between items-center text-sm">
+                              <span className="text-muted-foreground">Proficiency</span>
+                              <span className="font-medium">{skill.proficiency}%</span>
+                            </div>
+                            <Progress 
+                              value={skill.proficiency} 
+                              className="h-2" 
+                              style={{ background: 'var(--background-secondary)' }}
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold">{skill.name}</h4>
+                        <p className="text-sm text-muted-foreground">{skill.description}</p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                </motion.div>
+              ))}
             </motion.div>
-          </motion.div>
-        </div>
+            
+            {getFilteredSkills().length > 9 && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isVisible ? 1 : 0 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                className="flex justify-center mt-8"
+              >
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAllSkills(!showAllSkills)}
+                  className="gap-2"
+                >
+                  <span>{showAllSkills ? "Show Less" : "Show More"}</span>
+                  <ChevronsUpDown className="h-4 w-4" />
+                </Button>
+              </motion.div>
+            )}
+          </TabsContent>
+        </Tabs>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-16"
+        >
+          <Collapsible
+            open={isCollapsible}
+            onOpenChange={setIsCollapsible}
+            className="w-full max-w-3xl mx-auto border border-border rounded-lg p-4"
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium">Continuous Learning</h3>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-9 p-0">
+                  <ChevronsUpDown className="h-4 w-4" />
+                  <span className="sr-only">Toggle</span>
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+            <CollapsibleContent className="mt-4 space-y-4">
+              <p className="text-muted-foreground">
+                My technical expertise is constantly evolving. I believe in continuous learning and regularly engage in online courses, workshops, and technical communities to stay updated with the latest industry trends and technologies.
+              </p>
+              <div className="bg-secondary/20 p-4 rounded-lg">
+                <h4 className="font-medium mb-2">Recent Learning Focus</h4>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start">
+                    <span className="text-accent mr-2">•</span>
+                    <span>Advanced React patterns and state management</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-accent mr-2">•</span>
+                    <span>Cloud architecture and serverless computing</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-accent mr-2">•</span>
+                    <span>Automated testing frameworks and CI/CD pipelines</span>
+                  </li>
+                </ul>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </motion.div>
       </div>
     </section>
   );
 };
-
-const SkillCard = ({ 
-  icon, 
-  title, 
-  description 
-}: { 
-  icon: React.ReactNode, 
-  title: string, 
-  description: string 
-}) => (
-  <div className="p-4 rounded-xl bg-card hover-lift border">
-    <div className="h-8 w-8 flex items-center justify-center rounded-full bg-accent/10 text-accent mb-3">
-      {icon}
-    </div>
-    <h3 className="font-medium mb-1">{title}</h3>
-    <p className="text-sm text-muted-foreground">{description}</p>
-  </div>
-);
-
-function getColorByLevel(level: number): string {
-  if (level >= 90) return 'var(--green-500, #22c55e)';
-  if (level >= 75) return 'var(--accent)';
-  if (level >= 60) return 'var(--amber-500, #f59e0b)';
-  return 'var(--red-500, #ef4444)';
-}
 
 export default SkillsSection;

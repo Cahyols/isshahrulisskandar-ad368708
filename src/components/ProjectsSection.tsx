@@ -3,8 +3,11 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { GitBranch, ExternalLink, Globe, Database } from 'lucide-react';
+import { ExternalLink, Globe, Database } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import ProjectDialog from './ProjectDialog';
+import FusionsyncContent from './project-details/FusionsyncContent';
+import IoTWaterContent from './project-details/IoTWaterContent';
 
 interface Project {
   id: string;
@@ -36,6 +39,7 @@ const projects: Project[] = [
 
 const ProjectsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -74,6 +78,33 @@ const ProjectsSection = () => {
       transition: { duration: 0.5 } 
     }
   };
+
+  const getProjectContent = (projectId: string) => {
+    switch (projectId) {
+      case 'fusionsync':
+        return <FusionsyncContent />;
+      case 'iot-water':
+        return <IoTWaterContent />;
+      default:
+        return <div>Project details not available</div>;
+    }
+  };
+
+  const handleLearnMore = (projectId: string) => {
+    setSelectedProject(projectId);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedProject(null);
+  };
+
+  const selectedProjectData = selectedProject 
+    ? { 
+        id: selectedProject,
+        title: projects.find(p => p.id === selectedProject)?.title || "",
+        content: getProjectContent(selectedProject)
+      }
+    : null;
 
   return (
     <section id="projects" className="py-20 relative">
@@ -136,9 +167,13 @@ const ProjectsSection = () => {
                 </CardContent>
                 
                 <CardFooter className="pt-4 relative">
-                  <Button variant="outline" className="gap-2">
-                    <GitBranch size={16} />
-                    <span>View Project</span>
+                  <Button 
+                    variant="outline" 
+                    className="gap-2"
+                    onClick={() => handleLearnMore(project.id)}
+                  >
+                    <ExternalLink size={16} />
+                    <span>Learn More</span>
                   </Button>
                 </CardFooter>
               </Card>
@@ -163,6 +198,14 @@ const ProjectsSection = () => {
           </Button>
         </motion.div>
       </div>
+
+      {selectedProjectData && (
+        <ProjectDialog 
+          isOpen={!!selectedProject}
+          onClose={handleCloseDialog}
+          project={selectedProjectData}
+        />
+      )}
     </section>
   );
 };
