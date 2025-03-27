@@ -1,5 +1,5 @@
 
-import { Code, GitHub, Linkedin, Mail, Twitter } from 'lucide-react';
+import { Code, Github, Linkedin, Mail, Twitter } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -23,7 +23,7 @@ const Footer = () => {
               className="h-10 w-10 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
               aria-label="GitHub"
             >
-              <GitHub className="h-5 w-5" />
+              <Github className="h-5 w-5" />
             </a>
             <a
               href="#"
