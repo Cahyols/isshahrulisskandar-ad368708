@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Briefcase, Coffee, IceCream, Zap, PenTool, Laptop, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { Briefcase, Coffee, IceCream, Zap, PenTool, Laptop, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Experience {
   id: string;
@@ -17,21 +17,6 @@ interface Experience {
 }
 
 const experiences: Experience[] = [
-  {
-    id: "petronas",
-    title: "SOFTWARE ENGINEER & TESTING",
-    company: "Petronas Digital",
-    location: "Wilayah Persekutuan, Kuala Lumpur",
-    period: "July 2023 - April 2024",
-    description: [
-      "Created detailed test plans and cases for user acceptance testing by collaborating with coworker and business analyst, ensuring software met customer requirements and improved reliability.",
-      "Documented best practices and streamlined procedures for software testing, leading to greater accuracy and defect reduction.",
-      "Developed backend services using Node.js and built frontend interfaces with Angular, accelerating production deployment.",
-      "Supported the development and testing of new software applications by coordinating with cross-functional teams, ensuring a smooth transition to production."
-    ],
-    icon: <Laptop className="h-5 w-5" />,
-    category: 'engineering'
-  },
   {
     id: "emerson",
     title: "AutoCAD ENGINEER",
@@ -66,6 +51,21 @@ const experiences: Experience[] = [
     category: 'service'
   },
   {
+    id: "petronas",
+    title: "SOFTWARE ENGINEER & TESTING",
+    company: "Petronas Digital",
+    location: "Wilayah Persekutuan, Kuala Lumpur",
+    period: "July 2023 - April 2024",
+    description: [
+      "Created detailed test plans and cases for user acceptance testing by collaborating with coworker and business analyst, ensuring software met customer requirements and improved reliability.",
+      "Documented best practices and streamlined procedures for software testing, leading to greater accuracy and defect reduction.",
+      "Developed backend services using Node.js and built frontend interfaces with Angular, accelerating production deployment.",
+      "Supported the development and testing of new software applications by coordinating with cross-functional teams, ensuring a smooth transition to production."
+    ],
+    icon: <Laptop className="h-5 w-5" />,
+    category: 'engineering'
+  },
+  {
     id: "snowflakes",
     title: "PART TIME DESSERT CREW",
     company: "Snowflakes Sunway Pyramid",
@@ -80,6 +80,23 @@ const experiences: Experience[] = [
     ],
     icon: <IceCream className="h-5 w-5" />,
     category: 'service'
+  },
+  {
+    id: "serveconnect",
+    title: "IT TECHNICIAN SUPPORT",
+    company: "Serveconnect",
+    location: "Cheras, Kuala Lumpur",
+    period: "April 2021 - Oct 2021",
+    description: [
+      "Assembled PCs from scratch, partitioned storage based on standards, and updated BIOS configurations to enhance system performance and readiness.",
+      "Installed the latest drivers and loaded specified software packages, ensuring all systems met operational requirements.",
+      "Conducted quality control tests by running diagnostics and resolving hardware or software issues, ensuring proper functionality.",
+      "Provided hands-on user training on equipment and software usage, increasing user confidence and reducing IT support needs.",
+      "Maintained servers, firewalls, and CCTV systems through routine monitoring, ensuring system stability and data security.",
+      "Troubleshot and resolved user-reported IT issues quickly, minimizing system downtimes and improving overall user satisfaction."
+    ],
+    icon: <Laptop className="h-5 w-5" />,
+    category: 'support'
   },
   {
     id: "lanefour-1",
@@ -110,23 +127,6 @@ const experiences: Experience[] = [
     ],
     icon: <Zap className="h-5 w-5" />,
     category: 'engineering'
-  },
-  {
-    id: "serveconnect",
-    title: "IT TECHNICIAN SUPPORT",
-    company: "Serveconnect",
-    location: "Cheras, Kuala Lumpur",
-    period: "April 2021 - Oct 2021",
-    description: [
-      "Assembled PCs from scratch, partitioned storage based on standards, and updated BIOS configurations to enhance system performance and readiness.",
-      "Installed the latest drivers and loaded specified software packages, ensuring all systems met operational requirements.",
-      "Conducted quality control tests by running diagnostics and resolving hardware or software issues, ensuring proper functionality.",
-      "Provided hands-on user training on equipment and software usage, increasing user confidence and reducing IT support needs.",
-      "Maintained servers, firewalls, and CCTV systems through routine monitoring, ensuring system stability and data security.",
-      "Troubleshot and resolved user-reported IT issues quickly, minimizing system downtimes and improving overall user satisfaction."
-    ],
-    icon: <Laptop className="h-5 w-5" />,
-    category: 'support'
   },
 ];
 
@@ -163,7 +163,7 @@ const ExperienceSection = () => {
     : experiences.filter(exp => exp.category === activeTab);
 
   return (
-    <section id="experience" className="py-20 relative bg-gradient-to-t from-secondary/20 to-background">
+    <section id="experience" className="py-20 relative bg-gradient-to-t from-secondary/20 to-background dark:bg-gradient-to-t dark:from-black/40 dark:to-background">
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-border to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-border to-transparent" />
       
@@ -172,7 +172,7 @@ const ExperienceSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
           <Badge className="mb-4 px-3 py-1 text-sm" variant="outline">Work History</Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-3">Professional Experience</h2>
@@ -182,7 +182,7 @@ const ExperienceSection = () => {
         </motion.div>
 
         <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-12">
             <TabsList className="grid grid-cols-4 w-full max-w-md">
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="engineering">Engineering</TabsTrigger>
@@ -191,105 +191,154 @@ const ExperienceSection = () => {
             </TabsList>
           </div>
 
-          <TabsContent value={activeTab} className="mt-8 max-w-5xl mx-auto">
-            <div className="relative">
+          <TabsContent value={activeTab} className="mt-8">
+            <div className="grid grid-cols-1 gap-16 max-w-6xl mx-auto relative">
               {/* Timeline center line */}
               <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/20 via-accent to-primary/20 transform -translate-x-1/2"></div>
               
-              <div className="space-y-12">
-                {filteredExperiences.map((exp, index) => (
-                  <motion.div 
-                    key={exp.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ 
-                      opacity: isVisible ? 1 : 0, 
-                      y: isVisible ? 0 : 50 
-                    }}
-                    transition={{ 
-                      duration: 0.6, 
-                      delay: isVisible ? 0.1 * index : 0 
-                    }}
-                    className="relative group"
-                  >
-                    {/* Timeline dot */}
-                    <div className="absolute md:left-1/2 top-7 md:-translate-x-1/2 hidden md:flex">
-                      <motion.div 
-                        initial={{ scale: 0 }}
-                        animate={{ scale: isVisible ? 1 : 0 }}
-                        transition={{ duration: 0.4, delay: 0.3 + 0.1 * index }}
-                        className="w-14 h-14 rounded-full bg-background shadow-lg border-2 border-accent flex items-center justify-center z-10"
-                      >
-                        <div className="bg-gradient-to-br from-primary/20 to-accent/20 w-10 h-10 rounded-full flex items-center justify-center">
-                          {exp.icon}
+              {filteredExperiences.map((exp, index) => (
+                <motion.div 
+                  key={exp.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ 
+                    opacity: isVisible ? 1 : 0, 
+                    y: isVisible ? 0 : 50 
+                  }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: isVisible ? 0.1 * index : 0 
+                  }}
+                  className="relative"
+                >
+                  {/* Timeline dot */}
+                  <div className="hidden md:flex absolute top-0 left-1/2 -translate-x-1/2 z-10">
+                    <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: isVisible ? 1 : 0 }}
+                      transition={{ duration: 0.4, delay: 0.3 + 0.1 * index }}
+                      className="w-12 h-12 rounded-full bg-background dark:bg-background/80 shadow-lg border-2 border-accent flex items-center justify-center"
+                    >
+                      <div className="bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/40 dark:to-accent/40 w-8 h-8 rounded-full flex items-center justify-center">
+                        {exp.icon}
+                      </div>
+                    </motion.div>
+                  </div>
+                  
+                  {/* Card container with zigzag layout */}
+                  <div className={`md:grid md:grid-cols-2 gap-8 items-start`}>
+                    {/* Left or right placement based on index */}
+                    <div className={`${index % 2 === 0 ? 'md:col-start-1' : 'md:col-start-2'}`}>
+                      {index % 2 === 0 ? (
+                        <ExperienceCard 
+                          experience={exp} 
+                          expanded={expandedExperience === exp.id} 
+                          toggleExpanded={toggleExpanded}
+                          alignment="right"
+                        />
+                      ) : (
+                        <div className="md:hidden">
+                          <ExperienceCard 
+                            experience={exp} 
+                            expanded={expandedExperience === exp.id} 
+                            toggleExpanded={toggleExpanded}
+                            alignment="left"
+                          />
                         </div>
-                      </motion.div>
+                      )}
                     </div>
                     
-                    {/* Content container with alternating layout */}
-                    <div className={`md:grid md:grid-cols-2 gap-8 md:gap-16 items-start ${
-                      index % 2 === 0 ? '' : 'md:grid-flow-dense'
-                    }`}>
-                      {/* Empty column for first item in odd-indexed entries */}
-                      <div className={index % 2 === 0 ? 'md:block' : 'md:col-start-1 md:row-start-1'}>
-                        <motion.div 
-                          className="bg-card/90 backdrop-blur-sm border border-border rounded-lg shadow-lg hover:shadow-xl transition-all p-6 ml-12 md:ml-0 relative"
-                          whileHover={{ y: -5 }}
-                          onClick={() => toggleExpanded(exp.id)}
-                        >
-                          {/* Mobile only icon */}
-                          <div className="md:hidden absolute -left-12 top-7 w-8 h-8 bg-background rounded-full border border-accent flex items-center justify-center">
-                            {exp.icon}
-                          </div>
-                          
-                          <div className="flex flex-col">
-                            <div className="flex justify-between items-start mb-1">
-                              <span className="px-2 py-1 bg-accent/10 rounded-full text-xs font-medium text-accent">{exp.period}</span>
-                              <button className="text-muted-foreground hover:text-accent transition-colors">
-                                {expandedExperience === exp.id ? 
-                                  <ChevronUp className="h-4 w-4" /> : 
-                                  <ChevronDown className="h-4 w-4" />
-                                }
-                              </button>
-                            </div>
-                            
-                            <h3 className="text-xl font-bold mt-2 mb-1">{exp.title}</h3>
-                            <p className="text-sm text-muted-foreground mb-3 flex items-center gap-1">
-                              <Briefcase className="h-3 w-3" />
-                              <span>{exp.company}</span>
-                              <span className="mx-1">•</span>
-                              <span>{exp.location}</span>
-                            </p>
-                            
-                            <motion.div 
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ 
-                                height: expandedExperience === exp.id ? 'auto' : 0,
-                                opacity: expandedExperience === exp.id ? 1 : 0
-                              }}
-                              transition={{ duration: 0.3 }}
-                              className="overflow-hidden mt-2"
-                            >
-                              <ul className="list-disc text-left ml-5 space-y-2 text-sm text-muted-foreground">
-                                {exp.description.map((item, idx) => (
-                                  <li key={idx} className="leading-relaxed">{item}</li>
-                                ))}
-                              </ul>
-                            </motion.div>
-                          </div>
-                        </motion.div>
-                      </div>
-                      
-                      {/* Empty column for second item */}
-                      <div className={`hidden md:block ${index % 2 === 0 ? 'md:col-start-2' : ''}`}></div>
+                    <div className={`${index % 2 === 0 ? 'md:col-start-2' : 'md:col-start-1'}`}>
+                      {index % 2 === 1 ? (
+                        <ExperienceCard 
+                          experience={exp} 
+                          expanded={expandedExperience === exp.id} 
+                          toggleExpanded={toggleExpanded}
+                          alignment="left"
+                        />
+                      ) : (
+                        <div className="md:hidden">
+                          <ExperienceCard 
+                            experience={exp} 
+                            expanded={expandedExperience === exp.id} 
+                            toggleExpanded={toggleExpanded}
+                            alignment="right"
+                          />
+                        </div>
+                      )}
                     </div>
-                  </motion.div>
-                ))}
-              </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </TabsContent>
         </Tabs>
       </div>
     </section>
+  );
+};
+
+interface ExperienceCardProps {
+  experience: Experience;
+  expanded: boolean;
+  toggleExpanded: (id: string) => void;
+  alignment: 'left' | 'right';
+}
+
+const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment }: ExperienceCardProps) => {
+  return (
+    <motion.div 
+      className={`bg-card/90 backdrop-blur-sm border border-border rounded-lg shadow-lg hover:shadow-xl transition-all p-6 relative ${
+        alignment === 'right' ? 'md:ml-10' : 'md:mr-10'
+      }`}
+      whileHover={{ y: -5 }}
+      onClick={() => toggleExpanded(experience.id)}
+    >
+      {/* Mobile dot (visible only on small screens) */}
+      <div className="md:hidden absolute -left-3 top-6 h-6 w-6 rounded-full bg-background border border-accent flex items-center justify-center">
+        {experience.icon}
+      </div>
+      
+      <div className="flex justify-between items-start mb-1">
+        <span className="px-2 py-1 bg-accent/10 dark:bg-accent/20 rounded-full text-xs font-medium text-accent">
+          {experience.period}
+        </span>
+        <button 
+          className="text-muted-foreground hover:text-accent transition-colors"
+          aria-label={expanded ? "Collapse details" : "Expand details"}
+        >
+          {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </button>
+      </div>
+      
+      <h3 className="text-xl font-bold mt-2 mb-1">{experience.title}</h3>
+      <p className="text-sm text-muted-foreground mb-3 flex items-center gap-1">
+        <Briefcase className="h-3 w-3" />
+        <span>{experience.company}</span>
+        <span className="mx-1">•</span>
+        <span>{experience.location}</span>
+      </p>
+      
+      <motion.div 
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ 
+          height: expanded ? 'auto' : 0,
+          opacity: expanded ? 1 : 0
+        }}
+        transition={{ duration: 0.3 }}
+        className="overflow-hidden mt-2"
+      >
+        <ul className="list-disc ml-5 space-y-2 text-sm text-muted-foreground">
+          {experience.description.map((item, idx) => (
+            <li key={idx} className="leading-relaxed">{item}</li>
+          ))}
+        </ul>
+      </motion.div>
+      
+      {/* Connection line to center (visible only on desktop) */}
+      <div className={`hidden md:block absolute top-6 h-[2px] bg-gradient-to-r from-border to-accent/50 ${
+        alignment === 'right' ? 'right-full' : 'left-full'
+      } w-10`}></div>
+    </motion.div>
   );
 };
 
