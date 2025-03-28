@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { CodeIcon, Database, FileCode, Layers, PenTool, Server, LayoutGrid, Smartphone, Wand2 } from 'lucide-react';
+import { CodeIcon, Database, FileCode, Layers, PenTool, Server, LayoutGrid, Smartphone, Wand2, Eye } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChevronRight } from 'lucide-react';
@@ -29,7 +29,7 @@ interface Skill {
 const skillLevels: SkillLevel[] = [
   { name: 'Advanced', color: 'bg-emerald-500', range: '(80-100%)' },
   { name: 'Intermediate', color: 'bg-blue-500', range: '(60-79%)' },
-  { name: 'Basic', color: 'bg-amber-500', range: '(40-59%)' },
+  { name: 'Intermediate', color: 'bg-amber-500', range: '(40-59%)' },
   { name: 'Beginner', color: 'bg-rose-500', range: '(0-39%)' },
 ];
 
@@ -217,15 +217,38 @@ const SkillsSection = () => {
   return (
     <section 
       id="skills" 
-      className={`py-20 relative ${isDarkTheme ? 'bg-slate-900' : 'bg-slate-100'} text-${isDarkTheme ? 'white' : 'slate-800'} overflow-hidden`}
+      className={`py-20 relative ${isDarkTheme ? 'bg-slate-900 nightmare-vignette nightmare-grain' : 'bg-slate-100'} text-${isDarkTheme ? 'white' : 'slate-800'} overflow-hidden`}
     >
       {/* Background pattern */}
       <div 
         className={`absolute inset-0 ${isDarkTheme ? 'opacity-5' : 'opacity-10'} pointer-events-none`}
         style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+          backgroundImage: isDarkTheme 
+            ? "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
+            : "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
         }}
       />
+      
+      {/* Little Nightmares inspired elements for dark mode */}
+      {isDarkTheme && (
+        <>
+          <div className="absolute top-10 left-1/4 w-4 h-4 bg-yellow-400/30 rounded-full animate-pulse blur-md"></div>
+          <div className="absolute bottom-20 right-1/3 w-3 h-3 bg-yellow-400/20 rounded-full animate-pulse blur-sm"></div>
+          <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-yellow-400/10 rounded-full animate-pulse blur-sm"></div>
+          <motion.div 
+            className="absolute -bottom-20 -left-20 w-64 h-64 bg-yellow-900/5 rounded-full filter blur-3xl"
+            animate={{ 
+              opacity: [0.05, 0.1, 0.05],
+              scale: [1, 1.05, 1],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          />
+        </>
+      )}
       
       {/* Main content container */}
       <div className="container mx-auto px-4">
@@ -235,9 +258,9 @@ const SkillsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <Badge className="mb-4 px-3 py-1 text-sm bg-indigo-600 text-white" variant="default">Expertise</Badge>
-          <h2 className={`text-3xl md:text-4xl font-bold mb-3 ${isDarkTheme ? 'text-white' : 'text-slate-800'}`}>Technical Skills</h2>
-          <p className={`${isDarkTheme ? 'text-slate-400' : 'text-slate-600'} max-w-2xl mx-auto`}>
+          <Badge className={`mb-4 px-3 py-1 text-sm ${isDarkTheme ? 'bg-yellow-800/80 text-yellow-200 border-yellow-700/50' : 'bg-indigo-600 text-white'}`} variant="default">Expertise</Badge>
+          <h2 className={`text-3xl md:text-4xl font-bold mb-3 ${isDarkTheme ? 'text-yellow-100 nightmare-text-glow' : 'text-slate-800'}`}>Technical Skills</h2>
+          <p className={`${isDarkTheme ? 'text-yellow-200/70' : 'text-slate-600'} max-w-2xl mx-auto`}>
             My technical toolkit representing my proficiency across various technologies as a fresh graduate.
           </p>
         </motion.div>
@@ -255,8 +278,12 @@ const SkillsSection = () => {
                 <Card 
                   className={`cursor-pointer transition-all duration-300 border-0 ${
                     activeCategory === key 
-                      ? 'bg-indigo-600/80 shadow-lg shadow-indigo-500/20' 
-                      : `${isDarkTheme ? 'bg-slate-800/50 hover:bg-slate-800' : 'bg-white/80 hover:bg-white shadow-sm'}`
+                      ? isDarkTheme 
+                        ? 'bg-yellow-900/30 shadow-lg shadow-black/30 border border-yellow-800/30' 
+                        : 'bg-indigo-600/80 shadow-lg shadow-indigo-500/20' 
+                      : isDarkTheme
+                        ? 'bg-slate-800/70 hover:bg-slate-800/90 border border-slate-700/50'
+                        : 'bg-white/80 hover:bg-white shadow-sm'
                   }`}
                   onClick={() => setActiveCategory(key)}
                 >
@@ -264,17 +291,33 @@ const SkillsSection = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
-                          activeCategory === key ? 'bg-white/10' : isDarkTheme ? 'bg-slate-700/50' : 'bg-slate-100'
+                          activeCategory === key 
+                            ? isDarkTheme 
+                              ? 'bg-yellow-900/50' 
+                              : 'bg-white/10' 
+                            : isDarkTheme 
+                              ? 'bg-slate-700/50' 
+                              : 'bg-slate-100'
                         }`}>
                           {categoryIcons[key as keyof typeof categoryIcons]}
                         </div>
                         <div className="flex flex-col items-start">
-                          <h3 className={`font-medium ${activeCategory === key ? 'text-white' : isDarkTheme ? 'text-white' : 'text-slate-800'}`}>{name}</h3>
-                          <span className={`text-xs ${isDarkTheme ? 'text-slate-400' : 'text-slate-500'}`}>{getCategorySkillCount(key as keyof typeof groupedSkills)} skills</span>
+                          <h3 className={`font-medium ${
+                            activeCategory === key 
+                              ? 'text-white' 
+                              : isDarkTheme 
+                                ? 'text-yellow-100' 
+                                : 'text-slate-800'
+                          }`}>{name}</h3>
+                          <span className={`text-xs ${isDarkTheme ? 'text-yellow-200/50' : 'text-slate-500'}`}>{getCategorySkillCount(key as keyof typeof groupedSkills)} skills</span>
                         </div>
                       </div>
                       <ChevronRight className={`h-5 w-5 transition-transform ${
-                        activeCategory === key ? 'rotate-90 text-white' : isDarkTheme ? 'text-slate-500' : 'text-slate-400'
+                        activeCategory === key 
+                          ? 'rotate-90 text-white' 
+                          : isDarkTheme 
+                            ? 'text-yellow-200/50' 
+                            : 'text-slate-400'
                       }`} />
                     </div>
                   </CardContent>
@@ -284,17 +327,19 @@ const SkillsSection = () => {
 
             {/* Skill Levels Legend */}
             <motion.div 
-              className={`mt-8 ${isDarkTheme ? 'bg-slate-800/50' : 'bg-white/80'} rounded-lg p-5 shadow-sm`}
+              className={`mt-8 ${isDarkTheme ? 'nightmare-panel' : 'bg-white/80'} rounded-lg p-5 shadow-sm`}
               initial={{ opacity: 0, x: -20 }} 
               animate={{ opacity: isVisible ? 1 : 0, x: isVisible ? 0 : -20 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <h3 className={`text-lg font-medium mb-4 ${isDarkTheme ? 'text-white' : 'text-slate-800'}`}>Skill Levels</h3>
+              <h3 className={`text-lg font-medium mb-4 ${isDarkTheme ? 'text-yellow-100 flex items-center gap-2' : 'text-slate-800'}`}>
+                {isDarkTheme && <Eye className="h-4 w-4" />} Skill Levels
+              </h3>
               <div className="space-y-3">
                 {skillLevels.map((level, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div className={`h-3 w-3 rounded-full ${level.color}`}></div>
-                    <span className={`text-sm ${isDarkTheme ? 'text-white' : 'text-slate-700'}`}>{level.name} <span className={`text-xs ${isDarkTheme ? 'text-slate-400' : 'text-slate-500'}`}>{level.range}</span></span>
+                    <span className={`text-sm ${isDarkTheme ? 'text-yellow-100/80' : 'text-slate-700'}`}>{level.name} <span className={`text-xs ${isDarkTheme ? 'text-yellow-200/50' : 'text-slate-500'}`}>{level.range}</span></span>
                   </div>
                 ))}
               </div>
@@ -304,12 +349,12 @@ const SkillsSection = () => {
           {/* Skills Details - Right Side */}
           <div className="lg:col-span-3">
             <motion.div 
-              className={`${isDarkTheme ? 'bg-slate-800/50 border-slate-700' : 'bg-white/80 border-slate-200'} rounded-xl p-6 shadow-xl border`}
+              className={`${isDarkTheme ? 'nightmare-panel' : 'bg-white/80 border-slate-200'} rounded-xl p-6 shadow-xl border`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <h3 className={`text-xl font-bold mb-6 ${isDarkTheme ? 'text-white' : 'text-slate-800'}`}>
+              <h3 className={`text-xl font-bold mb-6 ${isDarkTheme ? 'text-yellow-100 nightmare-text-glow' : 'text-slate-800'}`}>
                 {categoryNames[activeCategory as keyof typeof categoryNames]}
               </h3>
 
@@ -328,25 +373,21 @@ const SkillsSection = () => {
                   >
                     <div className="flex justify-between items-center mb-1.5">
                       <div className="flex items-center gap-2">
-                        <div className={`h-8 w-8 rounded ${isDarkTheme ? 'bg-slate-700/50' : 'bg-slate-100'} flex items-center justify-center text-blue-400`}>
+                        <div className={`h-8 w-8 rounded ${isDarkTheme ? 'bg-slate-700/80' : 'bg-slate-100'} flex items-center justify-center ${isDarkTheme ? 'text-yellow-400' : 'text-blue-400'}`}>
                           {skill.icon}
                         </div>
-                        <h4 className={`font-medium ${isDarkTheme ? 'text-white' : 'text-slate-800'} group-hover:text-blue-400 transition-colors`}>
+                        <h4 className={`font-medium ${isDarkTheme ? 'text-yellow-100 group-hover:text-yellow-300' : 'text-slate-800 group-hover:text-blue-400'} transition-colors`}>
                           {skill.name}
                         </h4>
                       </div>
-                      <span className="font-mono text-sm font-bold text-blue-400">{skill.proficiency}%</span>
+                      <span className={`font-mono text-sm font-bold ${isDarkTheme ? 'text-yellow-400' : 'text-blue-400'}`}>{skill.proficiency}%</span>
                     </div>
                     <div className="relative h-2">
                       <Progress 
                         value={skill.proficiency} 
-                        className={`h-2 ${isDarkTheme ? 'bg-slate-700/50' : 'bg-slate-100/80'}`}
-                        indicatorColor={getSkillColor(skill.proficiency)}
+                        className={`h-2 ${isDarkTheme ? 'bg-slate-700/80' : 'bg-slate-100/80'}`}
+                        indicatorColor={isDarkTheme ? 'bg-yellow-600' : getSkillColor(skill.proficiency)}
                       />
-                      <div 
-                        className={`absolute bottom-0 left-0 h-full bg-gradient-to-r from-transparent via-${isDarkTheme ? 'white/5' : 'slate-200/30'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000`}
-                        style={{ width: `${skill.proficiency}%` }}
-                      ></div>
                     </div>
                   </motion.div>
                 ))}
@@ -368,16 +409,24 @@ const SkillsSection = () => {
               ].map((item, index) => (
                 <motion.div
                   key={index}
-                  className={`${isDarkTheme ? 'bg-slate-800/50 border-slate-700/50 hover:border-indigo-500/50 hover:bg-indigo-900/20' : 'bg-white/80 border-slate-200/50 hover:border-indigo-300/50 hover:bg-indigo-50/30'} rounded-xl p-4 transition-all duration-300 border`}
+                  className={`${
+                    isDarkTheme 
+                      ? 'nightmare-panel hover:border-yellow-700/50 hover:bg-yellow-900/10' 
+                      : 'bg-white/80 border-slate-200/50 hover:border-indigo-300/50 hover:bg-indigo-50/30'
+                  } rounded-xl p-4 transition-all duration-300 border`}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: isVisible ? 1 : 0, scale: isVisible ? 1 : 0.95 }}
                   transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
                 >
-                  <div className={`h-10 w-10 rounded-lg ${isDarkTheme ? 'bg-slate-700/50' : 'bg-slate-100'} flex items-center justify-center text-indigo-400 mb-3`}>
+                  <div className={`h-10 w-10 rounded-lg ${
+                    isDarkTheme ? 'bg-slate-800/80' : 'bg-slate-100'
+                  } flex items-center justify-center ${
+                    isDarkTheme ? 'text-yellow-500' : 'text-indigo-400'
+                  } mb-3`}>
                     {item.icon}
                   </div>
-                  <h3 className={`font-medium ${isDarkTheme ? 'text-white' : 'text-slate-800'} mb-1`}>{item.title}</h3>
-                  <p className={`text-xs ${isDarkTheme ? 'text-slate-400' : 'text-slate-500'}`}>{item.description}</p>
+                  <h3 className={`font-medium ${isDarkTheme ? 'text-yellow-100' : 'text-slate-800'} mb-1`}>{item.title}</h3>
+                  <p className={`text-xs ${isDarkTheme ? 'text-yellow-200/50' : 'text-slate-500'}`}>{item.description}</p>
                 </motion.div>
               ))}
             </motion.div>
