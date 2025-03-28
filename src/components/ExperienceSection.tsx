@@ -1,9 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Briefcase, Coffee, IceCream, Zap, PenTool, Laptop, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
-import ProjectDialog from '@/components/ProjectDialog';
 
 interface Experience {
   id: string;
@@ -163,7 +163,10 @@ const ExperienceSection = () => {
     : experiences.filter(exp => exp.category === activeTab);
 
   return (
-    <section id="experience" className="py-20 relative bg-secondary/50">
+    <section id="experience" className="py-20 relative bg-gradient-to-t from-secondary/20 to-background">
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-border to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-border to-transparent" />
+      
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -171,9 +174,9 @@ const ExperienceSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <Badge className="mb-4" variant="outline">Work History</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold">Professional Experience</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mt-4">
+          <Badge className="mb-4 px-3 py-1 text-sm" variant="outline">Work History</Badge>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">Professional Experience</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             A chronicle of my professional journey, showcasing my growth and contributions across various roles and industries.
           </p>
         </motion.div>
@@ -188,65 +191,100 @@ const ExperienceSection = () => {
             </TabsList>
           </div>
 
-          <TabsContent value={activeTab} className="mt-8 relative">
-            <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-border transform -translate-x-1/2 md:block hidden"></div>
-            
-            <div className="space-y-16 relative">
-              {filteredExperiences.map((exp, index) => (
-                <motion.div 
-                  key={exp.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ 
-                    opacity: isVisible ? 1 : 0, 
-                    y: isVisible ? 0 : 50 
-                  }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: isVisible ? 0.1 * index : 0 
-                  }}
-                  className={`relative ${index % 2 === 0 ? 'md:pr-12 md:text-right md:ml-0 ml-12' : 'md:pl-12 md:text-left md:mr-0 ml-12'} md:ml-0`}
-                >
-                  <div className="absolute md:left-1/2 left-0 md:transform md:-translate-x-1/2 -translate-x-16 w-8 h-8 rounded-full bg-background border-2 border-accent flex items-center justify-center z-10">
-                    {exp.icon}
-                  </div>
-                  
-                  <div 
-                    className={`bg-card border border-border rounded-lg shadow-lg p-6 hover:border-accent/50 transition-all cursor-pointer ${
-                      index % 2 === 0 ? 'md:mr-8' : 'md:ml-8'
-                    } md:max-w-[calc(50%-4rem)] w-full`}
-                    onClick={() => toggleExpanded(exp.id)}
+          <TabsContent value={activeTab} className="mt-8 max-w-5xl mx-auto">
+            <div className="relative">
+              {/* Timeline center line */}
+              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/20 via-accent to-primary/20 transform -translate-x-1/2"></div>
+              
+              <div className="space-y-12">
+                {filteredExperiences.map((exp, index) => (
+                  <motion.div 
+                    key={exp.id}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ 
+                      opacity: isVisible ? 1 : 0, 
+                      y: isVisible ? 0 : 50 
+                    }}
+                    transition={{ 
+                      duration: 0.6, 
+                      delay: isVisible ? 0.1 * index : 0 
+                    }}
+                    className="relative group"
                   >
-                    <div className="flex flex-col">
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-sm font-medium text-accent">{exp.period}</span>
-                        {expandedExperience === exp.id ? 
-                          <ChevronUp className="h-4 w-4 text-muted-foreground" /> : 
-                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                        }
-                      </div>
-                      
-                      <h3 className="text-xl font-bold mb-1">{exp.title}</h3>
-                      <p className="text-muted-foreground mb-4">{exp.company} • {exp.location}</p>
-                      
+                    {/* Timeline dot */}
+                    <div className="absolute md:left-1/2 top-7 md:-translate-x-1/2 hidden md:flex">
                       <motion.div 
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ 
-                          height: expandedExperience === exp.id ? 'auto' : 0,
-                          opacity: expandedExperience === exp.id ? 1 : 0
-                        }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: isVisible ? 1 : 0 }}
+                        transition={{ duration: 0.4, delay: 0.3 + 0.1 * index }}
+                        className="w-14 h-14 rounded-full bg-background shadow-lg border-2 border-accent flex items-center justify-center z-10"
                       >
-                        <ul className="list-disc text-left ml-5 space-y-2 text-sm text-muted-foreground">
-                          {exp.description.map((item, idx) => (
-                            <li key={idx}>{item}</li>
-                          ))}
-                        </ul>
+                        <div className="bg-gradient-to-br from-primary/20 to-accent/20 w-10 h-10 rounded-full flex items-center justify-center">
+                          {exp.icon}
+                        </div>
                       </motion.div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                    
+                    {/* Content container with alternating layout */}
+                    <div className={`md:grid md:grid-cols-2 gap-8 md:gap-16 items-start ${
+                      index % 2 === 0 ? '' : 'md:grid-flow-dense'
+                    }`}>
+                      {/* Empty column for first item in odd-indexed entries */}
+                      <div className={index % 2 === 0 ? 'md:block' : 'md:col-start-1 md:row-start-1'}>
+                        <motion.div 
+                          className="bg-card/90 backdrop-blur-sm border border-border rounded-lg shadow-lg hover:shadow-xl transition-all p-6 ml-12 md:ml-0 relative"
+                          whileHover={{ y: -5 }}
+                          onClick={() => toggleExpanded(exp.id)}
+                        >
+                          {/* Mobile only icon */}
+                          <div className="md:hidden absolute -left-12 top-7 w-8 h-8 bg-background rounded-full border border-accent flex items-center justify-center">
+                            {exp.icon}
+                          </div>
+                          
+                          <div className="flex flex-col">
+                            <div className="flex justify-between items-start mb-1">
+                              <span className="px-2 py-1 bg-accent/10 rounded-full text-xs font-medium text-accent">{exp.period}</span>
+                              <button className="text-muted-foreground hover:text-accent transition-colors">
+                                {expandedExperience === exp.id ? 
+                                  <ChevronUp className="h-4 w-4" /> : 
+                                  <ChevronDown className="h-4 w-4" />
+                                }
+                              </button>
+                            </div>
+                            
+                            <h3 className="text-xl font-bold mt-2 mb-1">{exp.title}</h3>
+                            <p className="text-sm text-muted-foreground mb-3 flex items-center gap-1">
+                              <Briefcase className="h-3 w-3" />
+                              <span>{exp.company}</span>
+                              <span className="mx-1">•</span>
+                              <span>{exp.location}</span>
+                            </p>
+                            
+                            <motion.div 
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ 
+                                height: expandedExperience === exp.id ? 'auto' : 0,
+                                opacity: expandedExperience === exp.id ? 1 : 0
+                              }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden mt-2"
+                            >
+                              <ul className="list-disc text-left ml-5 space-y-2 text-sm text-muted-foreground">
+                                {exp.description.map((item, idx) => (
+                                  <li key={idx} className="leading-relaxed">{item}</li>
+                                ))}
+                              </ul>
+                            </motion.div>
+                          </div>
+                        </motion.div>
+                      </div>
+                      
+                      {/* Empty column for second item */}
+                      <div className={`hidden md:block ${index % 2 === 0 ? 'md:col-start-2' : ''}`}></div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </TabsContent>
         </Tabs>

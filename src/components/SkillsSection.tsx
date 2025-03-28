@@ -1,10 +1,11 @@
+
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChevronsUpDown, Code, Database, Figma, FileCode, Laptop, Layers, PenTool, Server, Settings, Smartphone, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface Skill {
@@ -174,7 +175,13 @@ const SkillsSection = () => {
   };
 
   return (
-    <section id="skills" className="py-20 relative">
+    <section id="skills" className="py-20 relative overflow-hidden bg-gradient-to-b from-background to-secondary/20">
+      <div 
+        className="absolute inset-0 opacity-20 pointer-events-none" 
+        style={{
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+        }}
+      />
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -182,9 +189,9 @@ const SkillsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <Badge className="mb-4" variant="outline">Expertise</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold">Technical Skills</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mt-4">
+          <Badge className="mb-4 px-3 py-1 text-sm" variant="outline">Expertise</Badge>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">Technical Skills</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             A comprehensive showcase of my technical capabilities, developed through academic projects, professional experience, and continuous learning.
           </p>
         </motion.div>
@@ -210,40 +217,40 @@ const SkillsSection = () => {
             >
               {displayedSkills.map((skill) => (
                 <motion.div key={skill.name} variants={item}>
-                  <div className="relative group overflow-hidden rounded-xl bg-gradient-to-br from-background to-muted shadow-lg border border-border hover:border-accent/50 transition-all duration-300">
-                    <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
-                    <div className="p-5 relative z-10">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <Card className="h-full group overflow-hidden hover:shadow-xl transition-all duration-500 bg-card/50 backdrop-blur-sm">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/20 text-accent">
                           {skill.icon}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-lg">{skill.name}</h3>
-                          <Badge variant="outline" className="capitalize text-xs">
+                          <h3 className="font-bold text-xl">{skill.name}</h3>
+                          <Badge variant="secondary" className="capitalize text-xs">
                             {skill.category}
                           </Badge>
                         </div>
                       </div>
                       
-                      <p className="text-sm text-muted-foreground mb-4">
+                      <p className="text-muted-foreground mb-4 text-sm">
                         {skill.description}
                       </p>
                       
-                      <div className="mt-2 space-y-1">
-                        <div className="flex justify-between items-center text-sm">
-                          <span className="text-muted-foreground">Proficiency</span>
-                          <span className="font-medium">{skill.proficiency}%</span>
+                      <div className="mt-4">
+                        <div className="flex justify-between items-center text-sm mb-2">
+                          <span className="font-medium">Proficiency</span>
+                          <span className="text-primary font-bold">{skill.proficiency}%</span>
                         </div>
-                        <div className="h-1.5 w-full bg-muted/50 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-accent to-primary rounded-full"
-                            style={{ width: `${skill.proficiency}%` }}
+                        <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${skill.proficiency}%` }}
+                            transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
+                            className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
                           />
                         </div>
                       </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 </motion.div>
               ))}
             </motion.div>
@@ -253,15 +260,15 @@ const SkillsSection = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isVisible ? 1 : 0 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
-                className="flex justify-center mt-8"
+                className="flex justify-center mt-10"
               >
                 <Button
                   variant="outline"
                   onClick={() => setShowAllSkills(!showAllSkills)}
-                  className="gap-2"
+                  className="gap-2 group hover:bg-primary hover:text-white transition-all duration-300"
                 >
                   <span>{showAllSkills ? "Show Less" : "Show More"}</span>
-                  <ChevronsUpDown className="h-4 w-4" />
+                  <ChevronsUpDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
                 </Button>
               </motion.div>
             )}
@@ -277,7 +284,7 @@ const SkillsSection = () => {
           <Collapsible
             open={isCollapsible}
             onOpenChange={setIsCollapsible}
-            className="w-full max-w-3xl mx-auto border border-border rounded-lg p-4"
+            className="w-full max-w-3xl mx-auto border border-border rounded-lg p-6"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-medium">Continuous Learning</h3>
