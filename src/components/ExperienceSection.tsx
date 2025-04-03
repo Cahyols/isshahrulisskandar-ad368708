@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
@@ -227,39 +228,37 @@ const ExperienceSection = () => {
                   </div>
 
                   {/* Two-column grid layout for zigzag pattern */}
-                  <div className="md:grid md:grid-cols-2">
-                    {/* Left column - only has content on even indices */}
-                    <div className={`${index % 2 === 0 ? 'block' : 'hidden'} md:pr-12 relative`}>
-                      <ExperienceCard 
-                        experience={exp} 
-                        expanded={expandedExperience === exp.id}
-                        toggleExpanded={toggleExpanded}
-                        alignment="right"
-                        number={index + 1}
-                      />
-                      
-                      {/* Connector line from card to timeline */}
-                      <div className="hidden md:block absolute top-6 right-0 h-[2px] w-12 bg-gradient-to-r from-accent/50 to-border"></div>
+                  <div className="md:grid md:grid-cols-2 md:gap-4">
+                    {/* Left column content - only visible on even indices (0, 2, 4, etc.) */}
+                    <div className={`${index % 2 === 0 ? 'md:block' : 'md:hidden'} relative`}>
+                      <div className="md:pr-12 relative">
+                        <ExperienceCard 
+                          experience={exp} 
+                          expanded={expandedExperience === exp.id}
+                          toggleExpanded={toggleExpanded}
+                          alignment="right"
+                          number={index + 1}
+                        />
+                        
+                        {/* Connector line from card to timeline */}
+                        <div className="hidden md:block absolute top-6 right-0 h-[2px] w-12 bg-gradient-to-r from-accent/50 to-border"></div>
+                      </div>
                     </div>
 
-                    {/* Empty space for timeline on even indices */}
-                    <div className={`${index % 2 === 0 ? 'block' : 'hidden'} md:block`}></div>
-                    
-                    {/* Empty space for timeline on odd indices */}
-                    <div className={`${index % 2 === 1 ? 'block' : 'hidden'} md:block`}></div>
-                    
-                    {/* Right column - only has content on odd indices */}
-                    <div className={`${index % 2 === 1 ? 'block' : 'hidden'} md:pl-12 relative`}>
-                      <ExperienceCard 
-                        experience={exp} 
-                        expanded={expandedExperience === exp.id}
-                        toggleExpanded={toggleExpanded}
-                        alignment="left"
-                        number={index + 1}
-                      />
-                      
-                      {/* Connector line from timeline to card */}
-                      <div className="hidden md:block absolute top-6 left-0 h-[2px] w-12 bg-gradient-to-l from-accent/50 to-border"></div>
+                    {/* Right column content - only visible on odd indices (1, 3, 5, etc.) */}
+                    <div className={`${index % 2 === 1 ? 'md:block' : 'md:hidden'} relative`}>
+                      <div className="md:pl-12 relative">
+                        <ExperienceCard 
+                          experience={exp} 
+                          expanded={expandedExperience === exp.id}
+                          toggleExpanded={toggleExpanded}
+                          alignment="left"
+                          number={index + 1}
+                        />
+                        
+                        {/* Connector line from timeline to card */}
+                        <div className="hidden md:block absolute top-6 left-0 h-[2px] w-12 bg-gradient-to-l from-accent/50 to-border"></div>
+                      </div>
                     </div>
                     
                     {/* Mobile view - always show in single column */}
@@ -347,3 +346,4 @@ const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment, numbe
 };
 
 export default ExperienceSection;
+
