@@ -224,19 +224,26 @@ const ExperienceSection = () => {
                     </motion.div>
                   </div>
                   
-                  {/* Card container with zigzag layout */}
-                  <div className={`md:grid md:grid-cols-2 gap-8 items-start`}>
-                    {/* Left or right placement based on index */}
-                    <div className={`${index % 2 === 0 ? 'md:col-start-1' : 'md:col-start-2'}`}>
-                      {index % 2 === 0 ? (
-                        <ExperienceCard 
-                          experience={exp} 
-                          expanded={expandedExperience === exp.id} 
-                          toggleExpanded={toggleExpanded}
-                          alignment="right"
-                        />
-                      ) : (
-                        <div className="md:hidden">
+                  {/* Card container with proper zigzag layout */}
+                  <div className="md:grid md:grid-cols-2 gap-8 items-start relative">
+                    {/* Left column - only show content for even indices on desktop */}
+                    <div className="md:block">
+                      {index % 2 === 0 && (
+                        <div className="md:pr-10">
+                          <ExperienceCard 
+                            experience={exp} 
+                            expanded={expandedExperience === exp.id} 
+                            toggleExpanded={toggleExpanded}
+                            alignment="right"
+                          />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Right column - only show content for odd indices on desktop */}
+                    <div className="md:block">
+                      {index % 2 === 1 && (
+                        <div className="md:pl-10">
                           <ExperienceCard 
                             experience={exp} 
                             expanded={expandedExperience === exp.id} 
@@ -247,24 +254,14 @@ const ExperienceSection = () => {
                       )}
                     </div>
                     
-                    <div className={`${index % 2 === 0 ? 'md:col-start-2' : 'md:col-start-1'}`}>
-                      {index % 2 === 1 ? (
-                        <ExperienceCard 
-                          experience={exp} 
-                          expanded={expandedExperience === exp.id} 
-                          toggleExpanded={toggleExpanded}
-                          alignment="left"
-                        />
-                      ) : (
-                        <div className="md:hidden">
-                          <ExperienceCard 
-                            experience={exp} 
-                            expanded={expandedExperience === exp.id} 
-                            toggleExpanded={toggleExpanded}
-                            alignment="right"
-                          />
-                        </div>
-                      )}
+                    {/* Mobile view - always show in single column */}
+                    <div className="md:hidden col-span-2">
+                      <ExperienceCard 
+                        experience={exp} 
+                        expanded={expandedExperience === exp.id} 
+                        toggleExpanded={toggleExpanded}
+                        alignment="left"
+                      />
                     </div>
                   </div>
                 </motion.div>
@@ -288,7 +285,7 @@ const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment }: Exp
   return (
     <motion.div 
       className={`bg-card/90 backdrop-blur-sm border border-border rounded-lg shadow-lg hover:shadow-xl transition-all p-6 relative ${
-        alignment === 'right' ? 'md:ml-10' : 'md:mr-10'
+        alignment === 'right' ? 'md:text-right' : ''
       }`}
       whileHover={{ y: -5 }}
       onClick={() => toggleExpanded(experience.id)}
@@ -298,7 +295,7 @@ const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment }: Exp
         {experience.icon}
       </div>
       
-      <div className="flex justify-between items-start mb-1">
+      <div className={`flex ${alignment === 'right' ? 'justify-between' : 'justify-between'} items-start mb-1`}>
         <span className="px-2 py-1 bg-accent/10 dark:bg-accent/20 rounded-full text-xs font-medium text-accent">
           {experience.period}
         </span>
@@ -311,7 +308,9 @@ const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment }: Exp
       </div>
       
       <h3 className="text-xl font-bold mt-2 mb-1">{experience.title}</h3>
-      <p className="text-sm text-muted-foreground mb-3 flex items-center gap-1">
+      <p className={`text-sm text-muted-foreground mb-3 flex items-center gap-1 ${
+        alignment === 'right' ? 'justify-end' : 'justify-start'
+      }`}>
         <Briefcase className="h-3 w-3" />
         <span>{experience.company}</span>
         <span className="mx-1">•</span>
@@ -327,16 +326,16 @@ const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment }: Exp
         transition={{ duration: 0.3 }}
         className="overflow-hidden mt-2"
       >
-        <ul className="list-disc ml-5 space-y-2 text-sm text-muted-foreground">
+        <ul className={`list-disc ${alignment === 'right' ? 'mr-5 ml-0 text-right' : 'ml-5'} space-y-2 text-sm text-muted-foreground`}>
           {experience.description.map((item, idx) => (
-            <li key={idx} className="leading-relaxed">{item}</li>
+            <li key={idx} className={`leading-relaxed ${alignment === 'right' ? 'list-inside' : ''}`}>{item}</li>
           ))}
         </ul>
       </motion.div>
       
       {/* Connection line to center (visible only on desktop) */}
       <div className={`hidden md:block absolute top-6 h-[2px] bg-gradient-to-r from-border to-accent/50 ${
-        alignment === 'right' ? 'right-full' : 'left-full'
+        alignment === 'right' ? 'right-0 left-full' : 'left-0 right-full'
       } w-10`}></div>
     </motion.div>
   );

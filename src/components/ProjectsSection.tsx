@@ -1,13 +1,20 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ExternalLink, Globe, Database } from 'lucide-react';
+import { ExternalLink, Globe, Database, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ProjectDialog from './ProjectDialog';
 import FusionsyncContent from './project-details/FusionsyncContent';
 import IoTWaterContent from './project-details/IoTWaterContent';
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem, 
+  CarouselNext, 
+  CarouselPrevious 
+} from '@/components/ui/carousel';
 
 interface Project {
   id: string;
@@ -40,6 +47,7 @@ const projects: Project[] = [
 const ProjectsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -126,59 +134,71 @@ const ProjectsSection = () => {
           variants={containerVariants}
           initial="hidden"
           animate={isVisible ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          className="relative px-4 md:px-10"
         >
-          {projects.map((project) => (
-            <motion.div 
-              key={project.id} 
-              variants={itemVariants}
-              className="group"
-            >
-              <Card className="h-full group-hover:shadow-lg transition-all duration-300 overflow-hidden border border-border hover:border-accent">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-accent/5 rounded-full -translate-y-20 translate-x-20 group-hover:bg-accent/10 transition-all duration-500"></div>
-                
-                <CardHeader className="pb-2 relative">
-                  <div className="flex justify-between items-start">
-                    <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10 text-accent">
-                      {project.icon}
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      {project.year}
-                    </Badge>
-                  </div>
-                  <CardTitle className="mt-4 group-hover:text-accent transition-all">
-                    {project.title}
-                  </CardTitle>
-                </CardHeader>
-                
-                <CardContent className="text-muted-foreground relative">
-                  <p>{project.description}</p>
-                  
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {project.tags.map((tag) => (
-                      <span 
-                        key={tag} 
-                        className="skill-pill"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </CardContent>
-                
-                <CardFooter className="pt-4 relative">
-                  <Button 
-                    variant="outline" 
-                    className="gap-2"
-                    onClick={() => handleLearnMore(project.id)}
-                  >
-                    <ExternalLink size={16} />
-                    <span>Learn More</span>
-                  </Button>
-                </CardFooter>
-              </Card>
-            </motion.div>
-          ))}
+          <Carousel 
+            opts={{
+              align: "start",
+              loop: projects.length > 2,
+            }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {projects.map((project) => (
+                <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/2 xl:basis-1/3">
+                  <motion.div variants={itemVariants} className="group h-full">
+                    <Card className="h-full group-hover:shadow-lg transition-all duration-300 overflow-hidden border border-border hover:border-accent">
+                      <div className="absolute top-0 right-0 w-40 h-40 bg-accent/5 rounded-full -translate-y-20 translate-x-20 group-hover:bg-accent/10 transition-all duration-500"></div>
+                      
+                      <CardHeader className="pb-2 relative">
+                        <div className="flex justify-between items-start">
+                          <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10 text-accent">
+                            {project.icon}
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {project.year}
+                          </Badge>
+                        </div>
+                        <CardTitle className="mt-4 group-hover:text-accent transition-all">
+                          {project.title}
+                        </CardTitle>
+                      </CardHeader>
+                      
+                      <CardContent className="text-muted-foreground relative">
+                        <p>{project.description}</p>
+                        
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {project.tags.map((tag) => (
+                            <span 
+                              key={tag} 
+                              className="skill-pill"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </CardContent>
+                      
+                      <CardFooter className="pt-4 relative">
+                        <Button 
+                          variant="outline" 
+                          className="gap-2"
+                          onClick={() => handleLearnMore(project.id)}
+                        >
+                          <ExternalLink size={16} />
+                          <span>Learn More</span>
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="flex items-center justify-center gap-2 mt-8">
+              <CarouselPrevious className="relative static transform-none" />
+              <CarouselNext className="relative static transform-none" />
+            </div>
+          </Carousel>
         </motion.div>
 
         <motion.div
