@@ -227,10 +227,10 @@ const ExperienceSection = () => {
                     </motion.div>
                   </div>
                   
-                  {/* Card container with proper zigzag layout */}
-                  <div className="md:grid md:grid-cols-2 gap-8 items-start relative">
+                  {/* Card container with zigzag layout */}
+                  <div className="md:grid md:grid-cols-2 gap-8 items-start">
                     {/* Left column - only show content for even indices on desktop */}
-                    <div className={`${index % 2 === 0 ? 'md:block' : 'md:hidden'}`}>
+                    <div className={`${index % 2 === 0 ? 'md:block' : 'md:hidden'} relative`}>
                       <div className="md:pr-10">
                         <ExperienceCard 
                           experience={exp} 
@@ -240,10 +240,15 @@ const ExperienceSection = () => {
                           number={index + 1}
                         />
                       </div>
+                      
+                      {/* Horizontal connection line for left side */}
+                      {index % 2 === 0 && (
+                        <div className="hidden md:block absolute top-6 right-0 h-[2px] w-[calc(50%-6px)] bg-gradient-to-r from-border to-accent/50"></div>
+                      )}
                     </div>
                     
                     {/* Right column - only show content for odd indices on desktop */}
-                    <div className={`${index % 2 === 1 ? 'md:block' : 'md:hidden'}`}>
+                    <div className={`${index % 2 === 1 ? 'md:block' : 'md:hidden'} relative`}>
                       <div className="md:pl-10">
                         <ExperienceCard 
                           experience={exp} 
@@ -253,6 +258,11 @@ const ExperienceSection = () => {
                           number={index + 1}
                         />
                       </div>
+                      
+                      {/* Horizontal connection line for right side */}
+                      {index % 2 === 1 && (
+                        <div className="hidden md:block absolute top-6 left-0 h-[2px] w-[calc(50%-6px)] bg-gradient-to-l from-border to-accent/50"></div>
+                      )}
                     </div>
                     
                     {/* Mobile view - always show in single column */}
@@ -265,13 +275,6 @@ const ExperienceSection = () => {
                         number={index + 1}
                       />
                     </div>
-
-                    {/* Connection line to center (visible only on desktop) - FIXED */}
-                    <div className="hidden md:block absolute top-6 h-[2px] bg-gradient-to-r from-accent/50 to-border w-[calc(50%-10px)]" 
-                         style={{ 
-                           left: index % 2 === 1 ? '0' : 'auto',
-                           right: index % 2 === 0 ? '0' : 'auto',
-                         }}></div>
                   </div>
                 </motion.div>
               ))}
