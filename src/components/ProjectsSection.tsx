@@ -47,7 +47,6 @@ const projects: Project[] = [
 const ProjectsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -140,12 +139,13 @@ const ProjectsSection = () => {
             opts={{
               align: "start",
               loop: projects.length > 2,
+              dragFree: true,
             }}
             className="w-full"
           >
-            <CarouselContent>
+            <CarouselContent className="-ml-2 md:-ml-4">
               {projects.map((project) => (
-                <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/2 xl:basis-1/3">
+                <CarouselItem key={project.id} className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/2 xl:basis-1/3">
                   <motion.div variants={itemVariants} className="group h-full">
                     <Card className="h-full group-hover:shadow-lg transition-all duration-300 overflow-hidden border border-border hover:border-accent">
                       <div className="absolute top-0 right-0 w-40 h-40 bg-accent/5 rounded-full -translate-y-20 translate-x-20 group-hover:bg-accent/10 transition-all duration-500"></div>
@@ -195,8 +195,8 @@ const ProjectsSection = () => {
               ))}
             </CarouselContent>
             <div className="flex items-center justify-center gap-2 mt-8">
-              <CarouselPrevious className="relative static transform-none" />
-              <CarouselNext className="relative static transform-none" />
+              <CarouselPrevious className="static transform-none" />
+              <CarouselNext className="static transform-none" />
             </div>
           </Carousel>
         </motion.div>

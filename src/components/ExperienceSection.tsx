@@ -210,7 +210,7 @@ const ExperienceSection = () => {
                   }}
                   className="relative"
                 >
-                  {/* Timeline dot */}
+                  {/* Timeline dot with number */}
                   <div className="hidden md:flex absolute top-0 left-1/2 -translate-x-1/2 z-10">
                     <motion.div 
                       initial={{ scale: 0 }}
@@ -218,7 +218,10 @@ const ExperienceSection = () => {
                       transition={{ duration: 0.4, delay: 0.3 + 0.1 * index }}
                       className="w-12 h-12 rounded-full bg-background dark:bg-background/80 shadow-lg border-2 border-accent flex items-center justify-center"
                     >
-                      <div className="bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/40 dark:to-accent/40 w-8 h-8 rounded-full flex items-center justify-center">
+                      <div className="bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/40 dark:to-accent/40 w-8 h-8 rounded-full flex items-center justify-center relative">
+                        <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold">
+                          {index + 1}
+                        </span>
                         {exp.icon}
                       </div>
                     </motion.div>
@@ -227,31 +230,29 @@ const ExperienceSection = () => {
                   {/* Card container with proper zigzag layout */}
                   <div className="md:grid md:grid-cols-2 gap-8 items-start relative">
                     {/* Left column - only show content for even indices on desktop */}
-                    <div className="md:block">
-                      {index % 2 === 0 && (
-                        <div className="md:pr-10">
-                          <ExperienceCard 
-                            experience={exp} 
-                            expanded={expandedExperience === exp.id} 
-                            toggleExpanded={toggleExpanded}
-                            alignment="right"
-                          />
-                        </div>
-                      )}
+                    <div className={`${index % 2 === 0 ? 'md:block' : 'md:hidden'}`}>
+                      <div className="md:pr-10">
+                        <ExperienceCard 
+                          experience={exp} 
+                          expanded={expandedExperience === exp.id} 
+                          toggleExpanded={toggleExpanded}
+                          alignment="right"
+                          number={index + 1}
+                        />
+                      </div>
                     </div>
                     
                     {/* Right column - only show content for odd indices on desktop */}
-                    <div className="md:block">
-                      {index % 2 === 1 && (
-                        <div className="md:pl-10">
-                          <ExperienceCard 
-                            experience={exp} 
-                            expanded={expandedExperience === exp.id} 
-                            toggleExpanded={toggleExpanded}
-                            alignment="left"
-                          />
-                        </div>
-                      )}
+                    <div className={`${index % 2 === 1 ? 'md:block' : 'md:hidden'}`}>
+                      <div className="md:pl-10">
+                        <ExperienceCard 
+                          experience={exp} 
+                          expanded={expandedExperience === exp.id} 
+                          toggleExpanded={toggleExpanded}
+                          alignment="left"
+                          number={index + 1}
+                        />
+                      </div>
                     </div>
                     
                     {/* Mobile view - always show in single column */}
@@ -261,8 +262,16 @@ const ExperienceSection = () => {
                         expanded={expandedExperience === exp.id} 
                         toggleExpanded={toggleExpanded}
                         alignment="left"
+                        number={index + 1}
                       />
                     </div>
+
+                    {/* Connection line to center (visible only on desktop) - FIXED */}
+                    <div className="hidden md:block absolute top-6 h-[2px] bg-gradient-to-r from-accent/50 to-border w-[calc(50%-10px)]" 
+                         style={{ 
+                           left: index % 2 === 1 ? '0' : 'auto',
+                           right: index % 2 === 0 ? '0' : 'auto',
+                         }}></div>
                   </div>
                 </motion.div>
               ))}
@@ -279,9 +288,10 @@ interface ExperienceCardProps {
   expanded: boolean;
   toggleExpanded: (id: string) => void;
   alignment: 'left' | 'right';
+  number: number;
 }
 
-const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment }: ExperienceCardProps) => {
+const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment, number }: ExperienceCardProps) => {
   return (
     <motion.div 
       className={`bg-card/90 backdrop-blur-sm border border-border rounded-lg shadow-lg hover:shadow-xl transition-all p-6 relative ${
@@ -290,9 +300,9 @@ const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment }: Exp
       whileHover={{ y: -5 }}
       onClick={() => toggleExpanded(experience.id)}
     >
-      {/* Mobile dot (visible only on small screens) */}
+      {/* Mobile dot with number (visible only on small screens) */}
       <div className="md:hidden absolute -left-3 top-6 h-6 w-6 rounded-full bg-background border border-accent flex items-center justify-center">
-        {experience.icon}
+        <span className="text-xs font-semibold">{number}</span>
       </div>
       
       <div className={`flex ${alignment === 'right' ? 'justify-between' : 'justify-between'} items-start mb-1`}>
@@ -332,11 +342,6 @@ const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment }: Exp
           ))}
         </ul>
       </motion.div>
-      
-      {/* Connection line to center (visible only on desktop) */}
-      <div className={`hidden md:block absolute top-6 h-[2px] bg-gradient-to-r from-border to-accent/50 ${
-        alignment === 'right' ? 'right-0 left-full' : 'left-0 right-full'
-      } w-10`}></div>
     </motion.div>
   );
 };
