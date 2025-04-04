@@ -1,5 +1,5 @@
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import AboutSection from '@/components/AboutSection';
@@ -15,11 +15,16 @@ const Index = () => {
   const { isDarkTheme, toggleTheme } = useTheme();
   const cursorRef = useRef<HTMLDivElement>(null);
   const cursorDotRef = useRef<HTMLDivElement>(null);
+  const lightningRef = useRef<HTMLDivElement>(null);
+  
+  // Track mouse position for lightning effect
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-  // Advanced cursor effect
+  // Advanced cursor and lightning effects
   useEffect(() => {
     const cursor = cursorRef.current;
     const cursorDot = cursorDotRef.current;
+    const lightning = lightningRef.current;
     
     if (!cursor || !cursorDot) return;
     
@@ -42,17 +47,32 @@ const Index = () => {
       cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
       cursorDot.style.transform = `translate3d(${cursorDotX}px, ${cursorDotY}px, 0)`;
       
+      // Update lightning position when in dark mode
+      if (isDarkTheme && lightning) {
+        lightning.style.left = `${mouseX}px`;
+        lightning.style.top = `${mouseY}px`;
+      }
+      
       requestAnimationFrame(animate);
     };
     
     const handleMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
+      setMousePos({ x: e.clientX, y: e.clientY }); // Update mouse position state
     };
     
     const handleMouseDown = () => {
       cursor.classList.add('scale-150');
       cursorDot.classList.add('scale-0');
+      
+      // Extra flash effect on mouse down when in dark mode
+      if (isDarkTheme && lightning) {
+        lightning.classList.add('lightning-flash');
+        setTimeout(() => {
+          if (lightning) lightning.classList.remove('lightning-flash');
+        }, 300);
+      }
     };
     
     const handleMouseUp = () => {
@@ -85,6 +105,7 @@ const Index = () => {
     if (window.innerWidth > 768) {
       cursor.style.display = 'block';
       cursorDot.style.display = 'block';
+      if (lightning) lightning.style.display = isDarkTheme ? 'block' : 'none';
       animate();
     }
     
@@ -98,7 +119,15 @@ const Index = () => {
         element.removeEventListener('mouseleave', handleMouseLeaveLink);
       });
     };
-  }, []);
+  }, [isDarkTheme]);
+  
+  // Update lightning visibility when theme changes
+  useEffect(() => {
+    const lightning = lightningRef.current;
+    if (lightning) {
+      lightning.style.display = isDarkTheme && window.innerWidth > 768 ? 'block' : 'none';
+    }
+  }, [isDarkTheme]);
 
   // Smooth scroll functionality
   useEffect(() => {
@@ -142,6 +171,33 @@ const Index = () => {
         ref={cursorDotRef} 
         className="fixed hidden w-2 h-2 bg-accent rounded-full pointer-events-none z-50 transition-transform duration-100 -translate-x-1/2 -translate-y-1/2"
       ></div>
+      
+      {/* Lightning cursor effect for dark mode */}
+      <div 
+        ref={lightningRef}
+        className="fixed hidden pointer-events-none z-40 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          width: '300px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(120,120,255,0.15) 0%, rgba(70,70,255,0.05) 40%, transparent 70%)',
+          borderRadius: '50%',
+          transition: 'opacity 0.3s ease',
+        }}
+      ></div>
+      
+      <style jsx global>{`
+        .lightning-flash {
+          background: radial-gradient(circle, rgba(150,150,255,0.3) 0%, rgba(100,100,255,0.1) 40%, transparent 70%) !important;
+          opacity: 1 !important;
+          animation: pulse 0.3s ease-out;
+        }
+        
+        @keyframes pulse {
+          0% { transform: scale(0.8) translate(-50%, -50%); opacity: 0.3; }
+          50% { transform: scale(1.2) translate(-40%, -40%); opacity: 0.7; }
+          100% { transform: scale(1) translate(-50%, -50%); opacity: 0.3; }
+        }
+      `}</style>
       
       <Header toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
       

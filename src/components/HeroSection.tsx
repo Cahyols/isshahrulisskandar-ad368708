@@ -4,6 +4,7 @@ import { ArrowDown, Code, ChevronRight, Cpu, Database, Workflow } from 'lucide-r
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
+import { TypeAnimation } from 'react-type-animation';
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -36,7 +37,18 @@ const HeroSection = () => {
                 Electronic Engineer & Software Developer
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-                <span className="animated-gradient-text">Ahmad Isshahrul Isskandar</span>
+                <TypeAnimation
+                  sequence={[
+                    'Ahmad Isshahrul',
+                    1000,
+                    'Ahmad Isshahrul Isskandar',
+                    2000
+                  ]}
+                  wrapper="span"
+                  speed={50}
+                  repeat={Infinity}
+                  className="bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 bg-clip-text text-transparent" 
+                />
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground mb-6">
                 Fresh graduate specializing in software development with experience in testing, frontend and backend development.

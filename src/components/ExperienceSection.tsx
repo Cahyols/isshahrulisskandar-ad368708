@@ -17,6 +17,7 @@ interface Experience {
   icon: React.ReactNode;
   category: 'engineering' | 'service' | 'support';
   tag?: string;
+  status: 'Full-time' | 'Part-time' | 'Internship' | 'Freelance';
 }
 
 const experiences: Experience[] = [
@@ -37,7 +38,8 @@ const experiences: Experience[] = [
     ],
     icon: <PenTool className="h-5 w-5" />,
     category: 'engineering',
-    tag: 'Freelance'
+    tag: 'Current',
+    status: 'Freelance'
   },
   {
     id: "starbucks",
@@ -52,7 +54,8 @@ const experiences: Experience[] = [
       "Demonstrated time management by completing all daily tasks efficiently, contributing to overall operational success."
     ],
     icon: <Coffee className="h-5 w-5" />,
-    category: 'service'
+    category: 'service',
+    status: 'Part-time'
   },
   {
     id: "petronas",
@@ -67,7 +70,8 @@ const experiences: Experience[] = [
       "Supported the development and testing of new software applications by coordinating with cross-functional teams, ensuring a smooth transition to production."
     ],
     icon: <Laptop className="h-5 w-5" />,
-    category: 'engineering'
+    category: 'engineering',
+    status: 'Full-time'
   },
   {
     id: "snowflakes",
@@ -83,7 +87,8 @@ const experiences: Experience[] = [
       "Supported the team leader by creating work schedules, optimizing staff coordination and coverage."
     ],
     icon: <IceCream className="h-5 w-5" />,
-    category: 'service'
+    category: 'service',
+    status: 'Part-time'
   },
   {
     id: "serveconnect",
@@ -100,7 +105,8 @@ const experiences: Experience[] = [
       "Troubleshot and resolved user-reported IT issues quickly, minimizing system downtimes and improving overall user satisfaction."
     ],
     icon: <Laptop className="h-5 w-5" />,
-    category: 'support'
+    category: 'support',
+    status: 'Full-time'
   },
   {
     id: "lanefour-1",
@@ -115,7 +121,8 @@ const experiences: Experience[] = [
       "Supported the team by troubleshooting assembly issues, reducing delays and optimizing production time."
     ],
     icon: <Zap className="h-5 w-5" />,
-    category: 'engineering'
+    category: 'engineering',
+    status: 'Full-time'
   },
   {
     id: "lanefour-2",
@@ -130,7 +137,8 @@ const experiences: Experience[] = [
       "Supported the team by troubleshooting assembly issues, reducing delays and optimizing production time."
     ],
     icon: <Zap className="h-5 w-5" />,
-    category: 'engineering'
+    category: 'engineering',
+    status: 'Internship'
   },
 ];
 
@@ -193,7 +201,7 @@ const ExperienceSection = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: isVisible ? 1 : 0, x: isVisible ? 0 : -20 }}
                   transition={{ duration: 0.4, delay: isVisible ? 0.1 * index : 0 }}
-                  className="mb-12 last:mb-0 relative"
+                  className="mb-6 last:mb-0 relative" // Reduced gap by changing mb-12 to mb-6
                 >
                   {/* Timeline dot */}
                   <div 
@@ -229,9 +237,19 @@ const ExperienceSection = () => {
                 className="bg-card shadow-md rounded-lg border p-6"
               >
                 <div className="flex justify-between items-start mb-4">
-                  {selectedExperience.tag && (
-                    <Badge className="bg-primary text-primary-foreground">{selectedExperience.tag}</Badge>
-                  )}
+                  <div className="flex gap-2">
+                    {selectedExperience.tag && (
+                      <Badge className="bg-primary text-primary-foreground">{selectedExperience.tag}</Badge>
+                    )}
+                    <Badge className={`
+                      ${selectedExperience.status === 'Full-time' ? 'bg-green-600' :
+                        selectedExperience.status === 'Part-time' ? 'bg-blue-600' :
+                        selectedExperience.status === 'Internship' ? 'bg-amber-600' : 'bg-purple-600'} 
+                      text-white`
+                    }>
+                      {selectedExperience.status}
+                    </Badge>
+                  </div>
                   <span className="text-muted-foreground">{selectedExperience.company}</span>
                 </div>
                 
