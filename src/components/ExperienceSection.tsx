@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Briefcase, Coffee, IceCream, Zap, PenTool, Laptop, ChevronDown, ChevronUp } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Briefcase, PenTool, Coffee, Laptop, IceCream, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Experience {
   id: string;
@@ -14,6 +16,7 @@ interface Experience {
   description: string[];
   icon: React.ReactNode;
   category: 'engineering' | 'service' | 'support';
+  tag?: string;
 }
 
 const experiences: Experience[] = [
@@ -33,7 +36,8 @@ const experiences: Experience[] = [
       "Managed drawing version control and organization to ensure easy access to updated diagrams and enhance project traceability."
     ],
     icon: <PenTool className="h-5 w-5" />,
-    category: 'engineering'
+    category: 'engineering',
+    tag: 'Freelance'
   },
   {
     id: "starbucks",
@@ -132,8 +136,7 @@ const experiences: Experience[] = [
 
 const ExperienceSection = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState('all');
-  const [expandedExperience, setExpandedExperience] = useState<string | null>(null);
+  const [selectedExperience, setSelectedExperience] = useState<Experience | null>(experiences[0]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -154,14 +157,6 @@ const ExperienceSection = () => {
     };
   }, []);
 
-  const toggleExpanded = (id: string) => {
-    setExpandedExperience(expandedExperience === id ? null : id);
-  };
-
-  const filteredExperiences = activeTab === 'all' 
-    ? experiences 
-    : experiences.filter(exp => exp.category === activeTab);
-
   return (
     <section id="experience" className="py-20 relative bg-gradient-to-t from-secondary/20 to-background dark:bg-gradient-to-t dark:from-black/40 dark:to-background">
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-border to-transparent" />
@@ -175,169 +170,89 @@ const ExperienceSection = () => {
           className="text-center mb-16"
         >
           <Badge className="mb-4 px-3 py-1 text-sm" variant="outline">Work History</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold mb-3">Professional Experience</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            A chronicle of my professional journey, showcasing my growth and contributions across various roles and industries.
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">
+            <span className="text-foreground">My </span>
+            <span className="text-primary">Experience</span>
+          </h2>
+          <p className="text-muted-foreground max-w-3xl mx-auto">
+            A chronological display of my professional journey, showcasing roles and responsibilities
+            that have shaped my expertise in software engineering, testing, and electronic systems.
           </p>
         </motion.div>
 
-        <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
-          <div className="flex justify-center mb-12">
-            <TabsList className="grid grid-cols-4 w-full max-w-md">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="engineering">Engineering</TabsTrigger>
-              <TabsTrigger value="service">Service</TabsTrigger>
-              <TabsTrigger value="support">Support</TabsTrigger>
-            </TabsList>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto">
+          {/* Left side - Timeline */}
+          <div className="lg:col-span-5">
+            <div className="relative">
+              {/* Timeline vertical line */}
+              <div className="absolute left-[28px] top-6 bottom-0 w-[3px] bg-border"></div>
 
-          <TabsContent value={activeTab} className="mt-8">
-            <div className="grid grid-cols-1 gap-16 max-w-6xl mx-auto relative">
-              {/* Timeline center line */}
-              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/20 via-accent to-primary/20 transform -translate-x-1/2"></div>
-              
-              {filteredExperiences.map((exp, index) => (
-                <motion.div 
+              {experiences.map((exp, index) => (
+                <motion.div
                   key={exp.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ 
-                    opacity: isVisible ? 1 : 0, 
-                    y: isVisible ? 0 : 50 
-                  }}
-                  transition={{ 
-                    duration: 0.6, 
-                    delay: isVisible ? 0.1 * index : 0 
-                  }}
-                  className="relative"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: isVisible ? 1 : 0, x: isVisible ? 0 : -20 }}
+                  transition={{ duration: 0.4, delay: isVisible ? 0.1 * index : 0 }}
+                  className="mb-12 last:mb-0 relative"
                 >
                   {/* Timeline dot */}
-                  <div className="hidden md:flex absolute top-0 left-1/2 -translate-x-1/2 z-10">
-                    <motion.div 
-                      initial={{ scale: 0 }}
-                      animate={{ scale: isVisible ? 1 : 0 }}
-                      transition={{ duration: 0.4, delay: 0.3 + 0.1 * index }}
-                      className="w-12 h-12 rounded-full bg-background dark:bg-background/80 shadow-lg border-2 border-accent flex items-center justify-center"
-                    >
-                      <div className="bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/40 dark:to-accent/40 w-8 h-8 rounded-full flex items-center justify-center">
-                        {exp.icon}
-                      </div>
-                    </motion.div>
-                  </div>
+                  <div 
+                    className={`absolute left-[24px] w-[11px] h-[11px] rounded-full border-2 z-10 top-[26px] transform -translate-x-1/2 -translate-y-1/2 ${
+                      selectedExperience?.id === exp.id ? 'bg-primary border-primary' : 'bg-background border-muted-foreground'
+                    }`}
+                  ></div>
                   
-                  {/* Card container with proper zigzag layout */}
-                  <div className="md:grid md:grid-cols-2 gap-8 items-start relative">
-                    {/* Left column - only show content for even indices on desktop */}
-                    <div className="md:block">
-                      {index % 2 === 0 && (
-                        <div className="md:pr-10">
-                          <ExperienceCard 
-                            experience={exp} 
-                            expanded={expandedExperience === exp.id} 
-                            toggleExpanded={toggleExpanded}
-                            alignment="right"
-                          />
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Right column - only show content for odd indices on desktop */}
-                    <div className="md:block">
-                      {index % 2 === 1 && (
-                        <div className="md:pl-10">
-                          <ExperienceCard 
-                            experience={exp} 
-                            expanded={expandedExperience === exp.id} 
-                            toggleExpanded={toggleExpanded}
-                            alignment="left"
-                          />
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Mobile view - always show in single column */}
-                    <div className="md:hidden col-span-2">
-                      <ExperienceCard 
-                        experience={exp} 
-                        expanded={expandedExperience === exp.id} 
-                        toggleExpanded={toggleExpanded}
-                        alignment="left"
-                      />
-                    </div>
+                  <div 
+                    className={`ml-16 ${selectedExperience?.id === exp.id ? 'bg-primary/5 dark:bg-primary/10' : 'bg-card/80 hover:bg-primary/5 dark:hover:bg-primary/10'} p-5 rounded-lg cursor-pointer border transition-colors`}
+                    onClick={() => setSelectedExperience(exp)}
+                  >
+                    <h3 className="font-bold text-md">{exp.title}</h3>
+                    <p className="text-sm text-muted-foreground mt-1 flex items-center">
+                      <span>{exp.company}</span>
+                      <span className="mx-1.5">•</span>
+                      <span>{exp.period}</span>
+                    </p>
                   </div>
                 </motion.div>
               ))}
             </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+
+          {/* Right side - Selected experience details */}
+          <div className="lg:col-span-7">
+            {selectedExperience && (
+              <motion.div
+                key={selectedExperience.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="bg-card shadow-md rounded-lg border p-6"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  {selectedExperience.tag && (
+                    <Badge className="bg-primary text-primary-foreground">{selectedExperience.tag}</Badge>
+                  )}
+                  <span className="text-muted-foreground">{selectedExperience.company}</span>
+                </div>
+                
+                <h2 className="text-2xl font-bold mb-2">{selectedExperience.title}</h2>
+                <p className="text-muted-foreground mb-4">{selectedExperience.location} • {selectedExperience.period}</p>
+                
+                <Separator className="my-4" />
+                
+                <ul className="space-y-3 list-disc pl-5 text-foreground">
+                  {selectedExperience.description.map((item, idx) => (
+                    <li key={idx} className="text-muted-foreground">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+          </div>
+        </div>
       </div>
     </section>
-  );
-};
-
-interface ExperienceCardProps {
-  experience: Experience;
-  expanded: boolean;
-  toggleExpanded: (id: string) => void;
-  alignment: 'left' | 'right';
-}
-
-const ExperienceCard = ({ experience, expanded, toggleExpanded, alignment }: ExperienceCardProps) => {
-  return (
-    <motion.div 
-      className={`bg-card/90 backdrop-blur-sm border border-border rounded-lg shadow-lg hover:shadow-xl transition-all p-6 relative ${
-        alignment === 'right' ? 'md:text-right' : ''
-      }`}
-      whileHover={{ y: -5 }}
-      onClick={() => toggleExpanded(experience.id)}
-    >
-      {/* Mobile dot (visible only on small screens) */}
-      <div className="md:hidden absolute -left-3 top-6 h-6 w-6 rounded-full bg-background border border-accent flex items-center justify-center">
-        {experience.icon}
-      </div>
-      
-      <div className={`flex ${alignment === 'right' ? 'justify-between' : 'justify-between'} items-start mb-1`}>
-        <span className="px-2 py-1 bg-accent/10 dark:bg-accent/20 rounded-full text-xs font-medium text-accent">
-          {experience.period}
-        </span>
-        <button 
-          className="text-muted-foreground hover:text-accent transition-colors"
-          aria-label={expanded ? "Collapse details" : "Expand details"}
-        >
-          {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-        </button>
-      </div>
-      
-      <h3 className="text-xl font-bold mt-2 mb-1">{experience.title}</h3>
-      <p className={`text-sm text-muted-foreground mb-3 flex items-center gap-1 ${
-        alignment === 'right' ? 'justify-end' : 'justify-start'
-      }`}>
-        <Briefcase className="h-3 w-3" />
-        <span>{experience.company}</span>
-        <span className="mx-1">•</span>
-        <span>{experience.location}</span>
-      </p>
-      
-      <motion.div 
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ 
-          height: expanded ? 'auto' : 0,
-          opacity: expanded ? 1 : 0
-        }}
-        transition={{ duration: 0.3 }}
-        className="overflow-hidden mt-2"
-      >
-        <ul className={`list-disc ${alignment === 'right' ? 'mr-5 ml-0 text-right' : 'ml-5'} space-y-2 text-sm text-muted-foreground`}>
-          {experience.description.map((item, idx) => (
-            <li key={idx} className={`leading-relaxed ${alignment === 'right' ? 'list-inside' : ''}`}>{item}</li>
-          ))}
-        </ul>
-      </motion.div>
-      
-      {/* Connection line to center (visible only on desktop) */}
-      <div className={`hidden md:block absolute top-6 h-[2px] bg-gradient-to-r from-border to-accent/50 ${
-        alignment === 'right' ? 'right-0 left-full' : 'left-0 right-full'
-      } w-10`}></div>
-    </motion.div>
   );
 };
 
