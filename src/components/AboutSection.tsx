@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { Code, Server, Cpu, Briefcase, Phone, Mail, MapPin } from 'lucide-react';
+import { Code, Server, Cpu, Briefcase, Phone, Mail, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { SkillChart } from '@/components/ui/skill-chart';
 
 const AboutSection = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [showSpecializations, setShowSpecializations] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -39,6 +41,13 @@ const AboutSection = () => {
     })
   };
 
+  const specializationSkills = [
+    { name: "Software Dev", value: 75, color: "#4f46e5" },
+    { name: "QA Testing", value: 85, color: "#10b981" },
+    { name: "IoT", value: 65, color: "#f97316" },
+    { name: "Tech Support", value: 80, color: "#06b6d4" }
+  ];
+
   return (
     <section id="about" className="py-20 relative">
       <div className="container mx-auto px-4">
@@ -62,9 +71,40 @@ const AboutSection = () => {
             <p className="text-lg leading-relaxed mb-6">
               Fresh graduate with a Bachelor's degree in Electronic Engineering from Universiti Tun Hussein Onn (UTHM), specializing in software development and quality assurance. Experienced in software testing, front-end and back-end development using Node.js and Angular, and establishing best practices for software reliability during an internship at Petronas Digital.
             </p>
-            <p className="text-lg leading-relaxed">
+            <p className="text-lg leading-relaxed mb-6">
               Skilled in C programming, JavaScript, manual testing, data management, hardware troubleshooting, and AutoCAD. Certified from online courses, with hands-on experience in IoT projects and data synchronization systems. Eager to contribute to dynamic IT or engineering environments, focusing on innovation, technical excellence, and customer satisfaction.
             </p>
+            
+            <div className="mt-8">
+              <button 
+                onClick={() => setShowSpecializations(!showSpecializations)}
+                className="flex items-center justify-center gap-2 text-accent font-medium hover:underline mx-auto"
+              >
+                {showSpecializations ? "Hide Specializations Chart" : "View Specializations Chart"}
+                {showSpecializations ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+              
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ 
+                  height: showSpecializations ? 'auto' : 0,
+                  opacity: showSpecializations ? 1 : 0
+                }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                {showSpecializations && (
+                  <div className="pt-4">
+                    <SkillChart 
+                      data={specializationSkills}
+                      type="radar"
+                      height={300}
+                      className="w-full"
+                    />
+                  </div>
+                )}
+              </motion.div>
+            </div>
           </motion.div>
 
           <motion.div

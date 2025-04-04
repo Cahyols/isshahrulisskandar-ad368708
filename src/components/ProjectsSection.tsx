@@ -1,9 +1,9 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ExternalLink, Globe, Database, ArrowLeft, ArrowRight } from 'lucide-react';
+import { ExternalLink, Globe, Database, ArrowLeft, ArrowRight, X, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ProjectDialog from './ProjectDialog';
 import FusionsyncContent from './project-details/FusionsyncContent';
@@ -15,6 +15,7 @@ import {
   CarouselNext, 
   CarouselPrevious 
 } from '@/components/ui/carousel';
+import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 
 interface Project {
   id: string;
@@ -23,7 +24,22 @@ interface Project {
   year: string;
   tags: string[];
   icon: React.ReactNode;
+  images?: string[]; // Array of image URLs for the gallery
 }
+
+// Sample gallery images - in a real application, these would come from your assets or a database
+const projectGalleryImages = {
+  fusionsync: [
+    'https://i.imgur.com/1ZcRyrc.png',
+    'https://i.imgur.com/CQFmJ6V.png',
+    'https://i.imgur.com/Dc90Wz7.png'
+  ],
+  'iot-water': [
+    'https://i.imgur.com/rGWw7jk.png',
+    'https://i.imgur.com/XtDVGiX.png',
+    'https://i.imgur.com/t8zreIw.png'
+  ]
+};
 
 const projects: Project[] = [
   {
@@ -32,7 +48,8 @@ const projects: Project[] = [
     description: "Final year project focused on developing a system for seamless data synchronization between different platforms and template integration, enhancing workflow efficiency and data consistency.",
     year: "2024",
     tags: ["Data Synchronization", "API Integration", "Template System"],
-    icon: <Database className="h-5 w-5" />
+    icon: <Database className="h-5 w-5" />,
+    images: projectGalleryImages.fusionsync
   },
   {
     id: "iot-water",
@@ -40,13 +57,17 @@ const projects: Project[] = [
     description: "Designed and implemented an IoT-based system for monitoring and managing water resources and nutrient delivery for livestock, improving efficiency and reducing waste.",
     year: "2024",
     tags: ["IoT", "Water Management", "Embedded Systems"],
-    icon: <Globe className="h-5 w-5" />
+    icon: <Globe className="h-5 w-5" />,
+    images: projectGalleryImages["iot-water"]
   }
 ];
 
 const ProjectsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [selectedProjectForGallery, setSelectedProjectForGallery] = useState<string | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -106,6 +127,37 @@ const ProjectsSection = () => {
     setSelectedProject(null);
   };
 
+  const openGallery = (projectId: string) => {
+    setSelectedProjectForGallery(projectId);
+    setCurrentImageIndex(0);
+    setGalleryOpen(true);
+  };
+
+  const closeGallery = () => {
+    setGalleryOpen(false);
+    setSelectedProjectForGallery(null);
+  };
+
+  const nextImage = () => {
+    if (!selectedProjectForGallery) return;
+    const project = projects.find(p => p.id === selectedProjectForGallery);
+    if (!project?.images) return;
+    
+    setCurrentImageIndex((prevIndex) => 
+      prevIndex === project.images!.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevImage = () => {
+    if (!selectedProjectForGallery) return;
+    const project = projects.find(p => p.id === selectedProjectForGallery);
+    if (!project?.images) return;
+    
+    setCurrentImageIndex((prevIndex) => 
+      prevIndex === 0 ? project.images!.length - 1 : prevIndex - 1
+    );
+  };
+
   const selectedProjectData = selectedProject 
     ? { 
         id: selectedProject,
@@ -113,6 +165,10 @@ const ProjectsSection = () => {
         content: getProjectContent(selectedProject)
       }
     : null;
+
+  const galleryImages = selectedProjectForGallery 
+    ? projects.find(p => p.id === selectedProjectForGallery)?.images || []
+    : [];
 
   return (
     <section id="projects" className="py-20 relative">
@@ -177,6 +233,16 @@ const ProjectsSection = () => {
                             </span>
                           ))}
                         </div>
+                        
+                        {project.images && project.images.length > 0 && (
+                          <div 
+                            className="mt-4 flex items-center gap-2 cursor-pointer hover:text-accent transition-colors"
+                            onClick={() => openGallery(project.id)}
+                          >
+                            <ImageIcon size={16} />
+                            <span className="text-sm font-medium">View Gallery ({project.images.length} images)</span>
+                          </div>
+                        )}
                       </CardContent>
                       
                       <CardFooter className="pt-4 relative">
@@ -226,6 +292,65 @@ const ProjectsSection = () => {
           project={selectedProjectData}
         />
       )}
+
+      {/* Image Gallery Lightbox */}
+      <Dialog open={galleryOpen} onOpenChange={setGalleryOpen}>
+        <DialogContent className="max-w-4xl p-0 bg-black/90 border-border overflow-hidden">
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentImageIndex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center justify-center"
+              >
+                <img
+                  src={galleryImages[currentImageIndex]}
+                  alt={`Project gallery image ${currentImageIndex + 1}`}
+                  className="max-h-[80vh] max-w-full object-contain"
+                />
+              </motion.div>
+            </AnimatePresence>
+            
+            <div className="absolute top-4 right-4 flex gap-2">
+              <Button 
+                size="icon" 
+                variant="ghost" 
+                className="text-white bg-black/50 hover:bg-black/70 rounded-full h-8 w-8"
+                onClick={closeGallery}
+              >
+                <X size={16} />
+              </Button>
+            </div>
+            
+            <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
+              <p className="text-white bg-black/50 px-3 py-1 rounded-md text-sm">
+                {currentImageIndex + 1} / {galleryImages.length}
+              </p>
+            </div>
+            
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full h-10 w-10"
+              onClick={prevImage}
+            >
+              <ArrowLeft size={20} />
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full h-10 w-10"
+              onClick={nextImage}
+            >
+              <ArrowRight size={20} />
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

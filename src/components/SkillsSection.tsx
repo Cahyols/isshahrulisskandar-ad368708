@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChevronRight } from 'lucide-react';
 import { useTheme } from '@/components/ThemeToggleProvider';
+import { SkillChart } from '@/components/ui/skill-chart';
 
 // Define skill categories and levels
 type SkillCategory = 'programming' | 'technical' | 'tools' | 'design' | 'testing' | 'backend';
@@ -24,6 +25,7 @@ interface Skill {
   category: SkillCategory;
   description?: string;
   icon?: React.ReactNode;
+  color?: string;
 }
 
 const skillLevels: SkillLevel[] = [
@@ -39,37 +41,43 @@ const skills: Skill[] = [
     name: "Python",
     proficiency: 75,
     category: "programming",
-    icon: <FileCode className="h-5 w-5" />
+    icon: <FileCode className="h-5 w-5" />,
+    color: "#3776AB"
   },
   {
     name: "C#",
     proficiency: 65,
     category: "programming",
-    icon: <FileCode className="h-5 w-5" />
+    icon: <FileCode className="h-5 w-5" />,
+    color: "#239120"
   },
   {
     name: "JavaScript",
     proficiency: 70,
     category: "programming",
-    icon: <CodeIcon className="h-5 w-5" />
+    icon: <CodeIcon className="h-5 w-5" />,
+    color: "#F7DF1E"
   },
   {
     name: "AngularJS",
     proficiency: 60,
     category: "programming",
-    icon: <Layers className="h-5 w-5" />
+    icon: <Layers className="h-5 w-5" />,
+    color: "#DD0031"
   },
   {
     name: "HTML",
     proficiency: 80,
     category: "programming",
-    icon: <CodeIcon className="h-5 w-5" />
+    icon: <CodeIcon className="h-5 w-5" />,
+    color: "#E34F26"
   },
   {
     name: "CSS",
     proficiency: 70,
     category: "programming",
-    icon: <Wand2 className="h-5 w-5" />
+    icon: <Wand2 className="h-5 w-5" />,
+    color: "#1572B6"
   },
 
   // Technical Skills
@@ -77,19 +85,22 @@ const skills: Skill[] = [
     name: "Test Plan Creation",
     proficiency: 65,
     category: "technical",
-    icon: <FileCode className="h-5 w-5" />
+    icon: <FileCode className="h-5 w-5" />,
+    color: "#8b5cf6"
   },
   {
     name: "Software Troubleshooting",
     proficiency: 70,
     category: "technical",
-    icon: <LayoutGrid className="h-5 w-5" />
+    icon: <LayoutGrid className="h-5 w-5" />,
+    color: "#06b6d4"
   },
   {
     name: "CAD",
     proficiency: 55,
     category: "technical",
-    icon: <PenTool className="h-5 w-5" />
+    icon: <PenTool className="h-5 w-5" />,
+    color: "#f97316"
   },
 
   // Tools & Technologies
@@ -97,19 +108,22 @@ const skills: Skill[] = [
     name: "Microsoft Azure",
     proficiency: 45,
     category: "tools",
-    icon: <Server className="h-5 w-5" />
+    icon: <Server className="h-5 w-5" />,
+    color: "#0078D4"
   },
   {
     name: "Git",
     proficiency: 60,
     category: "tools",
-    icon: <FileCode className="h-5 w-5" />
+    icon: <FileCode className="h-5 w-5" />,
+    color: "#F05032"
   },
   {
     name: "MySQL",
     proficiency: 55,
     category: "tools",
-    icon: <Database className="h-5 w-5" />
+    icon: <Database className="h-5 w-5" />,
+    color: "#4479A1"
   },
 
   // Testing
@@ -117,13 +131,15 @@ const skills: Skill[] = [
     name: "Manual Testing",
     proficiency: 75,
     category: "testing",
-    icon: <LayoutGrid className="h-5 w-5" />
+    icon: <LayoutGrid className="h-5 w-5" />,
+    color: "#10b981"
   },
   {
     name: "Mobile Testing",
     proficiency: 60,
     category: "testing",
-    icon: <Smartphone className="h-5 w-5" />
+    icon: <Smartphone className="h-5 w-5" />,
+    color: "#f43f5e"
   },
 
   // Design
@@ -131,7 +147,8 @@ const skills: Skill[] = [
     name: "UI/UX Basics",
     proficiency: 50,
     category: "design",
-    icon: <Wand2 className="h-5 w-5" />
+    icon: <Wand2 className="h-5 w-5" />,
+    color: "#D946EF"
   }
 ];
 
@@ -155,6 +172,8 @@ const getSkillColor = (proficiency: number): string => {
 const SkillsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>('programming');
+  const [visualizationType, setVisualizationType] = useState<'bars' | 'chart'>('bars');
+  const [chartType, setChartType] = useState<'bar' | 'radar' | 'pie'>('bar');
   const { isDarkTheme } = useTheme();
   
   useEffect(() => {
@@ -214,6 +233,15 @@ const SkillsSection = () => {
     return groupedSkills[category].length;
   };
 
+  // Convert skills data for chart visualization
+  const getChartData = (category: keyof typeof groupedSkills) => {
+    return groupedSkills[category].map(skill => ({
+      name: skill.name,
+      value: skill.proficiency,
+      color: skill.color
+    }));
+  };
+
   return (
     <section 
       id="skills" 
@@ -263,6 +291,38 @@ const SkillsSection = () => {
           <p className={`${isDarkTheme ? 'text-yellow-200/70' : 'text-slate-600'} max-w-2xl mx-auto`}>
             My technical toolkit representing my proficiency across various technologies as a fresh graduate.
           </p>
+          
+          {/* Visualization toggle */}
+          <div className="flex justify-center mt-6 gap-4">
+            <button
+              onClick={() => setVisualizationType('bars')}
+              className={`px-3 py-1.5 text-sm font-medium rounded transition-all ${
+                visualizationType === 'bars'
+                  ? isDarkTheme 
+                    ? 'bg-yellow-900/50 text-yellow-100' 
+                    : 'bg-indigo-600 text-white'
+                  : isDarkTheme
+                    ? 'bg-slate-800/70 text-yellow-200/70 hover:bg-slate-800/90'
+                    : 'bg-white/80 text-slate-600 hover:bg-white'
+              }`}
+            >
+              Progress Bars
+            </button>
+            <button
+              onClick={() => setVisualizationType('chart')}
+              className={`px-3 py-1.5 text-sm font-medium rounded transition-all ${
+                visualizationType === 'chart'
+                  ? isDarkTheme 
+                    ? 'bg-yellow-900/50 text-yellow-100' 
+                    : 'bg-indigo-600 text-white'
+                  : isDarkTheme
+                    ? 'bg-slate-800/70 text-yellow-200/70 hover:bg-slate-800/90'
+                    : 'bg-white/80 text-slate-600 hover:bg-white'
+              }`}
+            >
+              Interactive Chart
+            </button>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
@@ -354,44 +414,84 @@ const SkillsSection = () => {
               animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <h3 className={`text-xl font-bold mb-6 ${isDarkTheme ? 'text-yellow-100 nightmare-text-glow' : 'text-slate-800'}`}>
-                {categoryNames[activeCategory as keyof typeof categoryNames]}
-              </h3>
+              <div className="flex justify-between items-center mb-6">
+                <h3 className={`text-xl font-bold ${isDarkTheme ? 'text-yellow-100 nightmare-text-glow' : 'text-slate-800'}`}>
+                  {categoryNames[activeCategory as keyof typeof categoryNames]}
+                </h3>
+                
+                {visualizationType === 'chart' && (
+                  <div className="flex gap-2">
+                    {(['bar', 'radar', 'pie'] as const).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setChartType(type)}
+                        className={`px-2 py-1 text-xs font-medium rounded ${
+                          chartType === type 
+                            ? isDarkTheme 
+                              ? 'bg-yellow-900/50 text-yellow-100' 
+                              : 'bg-indigo-600 text-white'
+                            : isDarkTheme
+                              ? 'bg-slate-800/70 text-yellow-200/70 hover:bg-slate-800/90'
+                              : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        }`}
+                      >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-              <motion.div 
-                variants={container}
-                initial="hidden"
-                animate={isVisible ? "show" : "hidden"}
-                className="space-y-6"
-              >
-                {groupedSkills[activeCategory as keyof typeof groupedSkills].map((skill, index) => (
-                  <motion.div 
-                    key={skill.name} 
-                    variants={item}
-                    className="group"
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                  >
-                    <div className="flex justify-between items-center mb-1.5">
-                      <div className="flex items-center gap-2">
-                        <div className={`h-8 w-8 rounded ${isDarkTheme ? 'bg-slate-700/80' : 'bg-slate-100'} flex items-center justify-center ${isDarkTheme ? 'text-yellow-400' : 'text-blue-400'}`}>
-                          {skill.icon}
+              {visualizationType === 'bars' ? (
+                <motion.div 
+                  variants={container}
+                  initial="hidden"
+                  animate={isVisible ? "show" : "hidden"}
+                  className="space-y-6"
+                >
+                  {groupedSkills[activeCategory as keyof typeof groupedSkills].map((skill, index) => (
+                    <motion.div 
+                      key={skill.name} 
+                      variants={item}
+                      className="group"
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                    >
+                      <div className="flex justify-between items-center mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <div className={`h-8 w-8 rounded ${isDarkTheme ? 'bg-slate-700/80' : 'bg-slate-100'} flex items-center justify-center ${isDarkTheme ? 'text-yellow-400' : 'text-blue-400'}`}>
+                            {skill.icon}
+                          </div>
+                          <h4 className={`font-medium ${isDarkTheme ? 'text-yellow-100 group-hover:text-yellow-300' : 'text-slate-800 group-hover:text-blue-400'} transition-colors`}>
+                            {skill.name}
+                          </h4>
                         </div>
-                        <h4 className={`font-medium ${isDarkTheme ? 'text-yellow-100 group-hover:text-yellow-300' : 'text-slate-800 group-hover:text-blue-400'} transition-colors`}>
-                          {skill.name}
-                        </h4>
+                        <span className={`font-mono text-sm font-bold ${isDarkTheme ? 'text-yellow-400' : 'text-blue-400'}`}>{skill.proficiency}%</span>
                       </div>
-                      <span className={`font-mono text-sm font-bold ${isDarkTheme ? 'text-yellow-400' : 'text-blue-400'}`}>{skill.proficiency}%</span>
-                    </div>
-                    <div className="relative h-2">
-                      <Progress 
-                        value={skill.proficiency} 
-                        className={`h-2 ${isDarkTheme ? 'bg-slate-700/80' : 'bg-slate-100/80'}`}
-                        indicatorColor={isDarkTheme ? 'bg-yellow-600' : getSkillColor(skill.proficiency)}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
+                      <div className="relative h-2">
+                        <Progress 
+                          value={skill.proficiency} 
+                          className={`h-2 ${isDarkTheme ? 'bg-slate-700/80' : 'bg-slate-100/80'}`}
+                          indicatorColor={isDarkTheme ? 'bg-yellow-600' : getSkillColor(skill.proficiency)}
+                        />
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="py-4"
+                >
+                  <SkillChart 
+                    data={getChartData(activeCategory as keyof typeof groupedSkills)} 
+                    type={chartType}
+                    height={350}
+                    className="w-full"
+                  />
+                </motion.div>
+              )}
             </motion.div>
 
             {/* Additional Skill Categories */}
