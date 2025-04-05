@@ -1,3 +1,4 @@
+
 import { useRef, useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
@@ -7,6 +8,8 @@ import SkillsSection from '@/components/SkillsSection';
 import EducationSection from '@/components/EducationSection';
 import ProjectsSection from '@/components/ProjectsSection';
 import ContactSection from '@/components/ContactSection';
+import ParallaxBackground from '@/components/ParallaxBackground';
+import ScrollAnimationWrapper from '@/components/ScrollAnimationWrapper';
 import Footer from '@/components/Footer';
 import { useTheme } from '@/components/ThemeToggleProvider';
 
@@ -160,6 +163,9 @@ const Index = () => {
   
   return (
     <div className="relative overflow-x-hidden">
+      {/* Parallax Background */}
+      <ParallaxBackground />
+      
       {/* Custom cursor (only visible on desktop) */}
       <div 
         ref={cursorRef} 
@@ -204,12 +210,24 @@ const Index = () => {
       
       <main>
         <HeroSection />
-        <AboutSection />
-        <ExperienceSection />
-        <SkillsSection />
-        <EducationSection />
-        <ProjectsSection />
-        <ContactSection />
+        <ScrollAnimationWrapper>
+          <AboutSection />
+        </ScrollAnimationWrapper>
+        <ScrollAnimationWrapper>
+          <ExperienceSection />
+        </ScrollAnimationWrapper>
+        <ScrollAnimationWrapper>
+          <SkillsSection />
+        </ScrollAnimationWrapper>
+        <ScrollAnimationWrapper>
+          <EducationSection />
+        </ScrollAnimationWrapper>
+        <ScrollAnimationWrapper>
+          <ProjectsSection />
+        </ScrollAnimationWrapper>
+        <ScrollAnimationWrapper>
+          <ContactSection />
+        </ScrollAnimationWrapper>
       </main>
       
       <Footer />

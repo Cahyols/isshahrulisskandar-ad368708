@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Phone, Mail, Send, MapPin, Loader2 } from 'lucide-react';
+import { Mail, Send, MapPin, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const ContactSection = () => {
@@ -89,16 +89,6 @@ const ContactSection = () => {
             </motion.p>
             
             <motion.div variants={itemVariants} className="space-y-4">
-              <div className="flex items-center gap-4 p-4 rounded-lg bg-background">
-                <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10 text-accent">
-                  <Phone className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-medium">Phone</h4>
-                  <p className="text-muted-foreground">0182663482</p>
-                </div>
-              </div>
-              
               <div className="flex items-center gap-4 p-4 rounded-lg bg-background">
                 <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10 text-accent">
                   <Mail className="h-5 w-5" />
