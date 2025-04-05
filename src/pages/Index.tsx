@@ -1,4 +1,3 @@
-
 import { useRef, useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
@@ -185,7 +184,8 @@ const Index = () => {
         }}
       ></div>
       
-      <style jsx global>{`
+      <style>
+        {`
         .lightning-flash {
           background: radial-gradient(circle, rgba(150,150,255,0.3) 0%, rgba(100,100,255,0.1) 40%, transparent 70%) !important;
           opacity: 1 !important;
@@ -197,7 +197,8 @@ const Index = () => {
           50% { transform: scale(1.2) translate(-40%, -40%); opacity: 0.7; }
           100% { transform: scale(1) translate(-50%, -50%); opacity: 0.3; }
         }
-      `}</style>
+        `}
+      </style>
       
       <Header toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
       

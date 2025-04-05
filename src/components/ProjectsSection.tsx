@@ -3,11 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ExternalLink, Globe, Database, ArrowLeft, ArrowRight, X, Image as ImageIcon } from 'lucide-react';
+import { ExternalLink, Globe, Database, ArrowLeft, ArrowRight, X, Image as ImageIcon, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ProjectDialog from './ProjectDialog';
 import FusionsyncContent from './project-details/FusionsyncContent';
 import IoTWaterContent from './project-details/IoTWaterContent';
+import SmartGroceryContent from './project-details/SmartGroceryContent';
 import { 
   Carousel, 
   CarouselContent, 
@@ -38,10 +39,24 @@ const projectGalleryImages = {
     'https://i.imgur.com/rGWw7jk.png',
     'https://i.imgur.com/XtDVGiX.png',
     'https://i.imgur.com/t8zreIw.png'
+  ],
+  'smart-grocery': [
+    'https://i.imgur.com/q3SFBfZ.png', 
+    'https://i.imgur.com/2NvgxAd.png',
+    'https://i.imgur.com/8iMLpF7.png'
   ]
 };
 
 const projects: Project[] = [
+  {
+    id: "smart-grocery",
+    title: "Smart Grocery & Meal Planner",
+    description: "A mobile app that helps users manage fridge inventory, plan meals, and generate grocery lists based on available ingredients with price comparison across Malaysian supermarkets.",
+    year: "2025",
+    tags: ["Mobile App", "Meal Planning", "Inventory Management"],
+    icon: <Smartphone className="h-5 w-5" />,
+    images: projectGalleryImages["smart-grocery"]
+  },
   {
     id: "fusionsync",
     title: "Fusionsync: Bridging System For Seamless Data Synchronization And Template Integration",
@@ -114,6 +129,8 @@ const ProjectsSection = () => {
         return <FusionsyncContent />;
       case 'iot-water':
         return <IoTWaterContent />;
+      case 'smart-grocery':
+        return <SmartGroceryContent />;
       default:
         return <div>Project details not available</div>;
     }
