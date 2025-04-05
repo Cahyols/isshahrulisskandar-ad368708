@@ -8,10 +8,9 @@ import { useIsMobile } from '@/hooks/use-mobile';
 interface HeaderProps {
   toggleTheme: () => void;
   isDarkTheme: boolean;
-  children?: React.ReactNode;
 }
 
-const Header = ({ toggleTheme, isDarkTheme, children }: HeaderProps) => {
+const Header = ({ toggleTheme, isDarkTheme }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -56,26 +55,20 @@ const Header = ({ toggleTheme, isDarkTheme, children }: HeaderProps) => {
           ? 'py-2 backdrop-blur-md bg-background/80 shadow-md' 
           : 'py-4 bg-transparent'
       }`}
-      role="banner"
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <a 
-          href="#home" 
-          className="text-xl font-bold animated-gradient-text"
-          aria-label="Go to homepage"
-        >
+        <a href="#home" className="text-xl font-bold animated-gradient-text">
           Isshahrul Isskandar
         </a>
         
         {/* Desktop Navigation */}
         {!isMobile && (
-          <nav className="hidden md:flex space-x-1" aria-label="Main navigation">
+          <nav className="hidden md:flex space-x-1">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
                 className="px-3 py-2 rounded-md text-sm font-medium transition-colors hover:text-accent"
-                aria-current={link.href === '#home' ? 'page' : undefined}
               >
                 {link.name}
               </a>
@@ -85,11 +78,10 @@ const Header = ({ toggleTheme, isDarkTheme, children }: HeaderProps) => {
               size="icon"
               onClick={toggleTheme} 
               className="ml-2"
-              aria-label={isDarkTheme ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label="Toggle theme"
             >
               {isDarkTheme ? <Sun size={20} /> : <Moon size={20} />}
             </Button>
-            {children}
             <Button 
               variant="outline" 
               className="ml-2"
@@ -107,18 +99,15 @@ const Header = ({ toggleTheme, isDarkTheme, children }: HeaderProps) => {
               variant="ghost"
               size="icon"
               onClick={toggleTheme} 
-              aria-label={isDarkTheme ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label="Toggle theme"
             >
               {isDarkTheme ? <Sun size={20} /> : <Moon size={20} />}
             </Button>
-            {children}
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={toggleMenu}
-              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isMenuOpen}
-              aria-controls="mobile-menu"
+              aria-label="Toggle menu"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </Button>
@@ -129,20 +118,17 @@ const Header = ({ toggleTheme, isDarkTheme, children }: HeaderProps) => {
       {/* Mobile Menu */}
       {isMobile && (
         <div 
-          id="mobile-menu"
           className={`fixed inset-0 z-40 bg-background/95 backdrop-blur-md transition-transform duration-300 ease-in-out ${
             isMenuOpen ? 'translate-x-0' : 'translate-x-full'
           } pt-20`}
-          aria-hidden={!isMenuOpen}
         >
-          <nav className="flex flex-col items-center space-y-6 p-8" aria-label="Mobile navigation">
+          <nav className="flex flex-col items-center space-y-6 p-8">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
                 className="text-xl font-medium hover:text-accent transition-colors"
                 onClick={toggleMenu}
-                aria-current={link.href === '#home' ? 'page' : undefined}
               >
                 {link.name}
               </a>
