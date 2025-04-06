@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { Code, Server, Cpu, Briefcase, Phone, Mail, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { Code, Server, Cpu, Briefcase, Mail, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
 import { SkillChart } from '@/components/ui/skill-chart';
 
 const AboutSection = () => {
@@ -116,16 +116,6 @@ const AboutSection = () => {
             <div className="glass-panel rounded-2xl p-6">
               <h3 className="text-xl font-semibold mb-4">Contact Information</h3>
               <ul className="space-y-3">
-                <motion.li 
-                  custom={0}
-                  variants={iconVariants}
-                  initial="hidden"
-                  animate={isVisible ? "visible" : "hidden"}
-                  className="flex items-center gap-2"
-                >
-                  <Phone size={18} className="text-accent" />
-                  <span>0182663482</span>
-                </motion.li>
                 <motion.li 
                   custom={1}
                   variants={iconVariants}

@@ -26,7 +26,7 @@ const Footer = () => {
               <Github className="h-5 w-5" />
             </a>
             <a
-              href="#"
+              href="https://www.linkedin.com/in/ahmad-isshahrul-isskandar-bin-mohd-zaman-820277214/"
               className="h-10 w-10 flex items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
               aria-label="LinkedIn"
             >
