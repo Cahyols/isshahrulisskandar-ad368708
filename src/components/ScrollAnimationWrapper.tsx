@@ -39,7 +39,7 @@ const ScrollAnimationWrapper = ({
       },
       visible: { 
         opacity: 1,
-        ...(direction.includes('y') ? { y: 0 } : { x: 0 })
+        ...(direction === 'up' || direction === 'down' ? { y: 0 } : { x: 0 })
       }
     };
   };

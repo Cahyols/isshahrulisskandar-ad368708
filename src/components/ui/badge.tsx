@@ -18,6 +18,7 @@ const badgeVariants = cva(
         outline: "text-foreground",
         self: "border-transparent bg-orange-500 text-white hover:bg-orange-600",
         university: "border-transparent bg-blue-500 text-white hover:bg-blue-600",
+        all: "border-transparent bg-primary/80 text-white hover:bg-primary/90",
       },
     },
     defaultVariants: {
