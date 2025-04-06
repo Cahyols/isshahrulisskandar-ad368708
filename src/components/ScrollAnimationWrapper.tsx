@@ -1,22 +1,60 @@
 
 import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 
 interface ScrollAnimationWrapperProps {
   children: ReactNode;
   className?: string;
+  delay?: number;
+  duration?: number;
+  amount?: number;
+  once?: boolean;
+  direction?: 'up' | 'down' | 'left' | 'right';
 }
 
-const ScrollAnimationWrapper = ({ children, className = '' }: ScrollAnimationWrapperProps) => {
+const ScrollAnimationWrapper = ({ 
+  children, 
+  className = '',
+  delay = 0,
+  duration = 0.6,
+  amount = 0.1,
+  once = true,
+  direction = 'up'
+}: ScrollAnimationWrapperProps) => {
+  const getVariants = (): Variants => {
+    const directionOffset = () => {
+      switch (direction) {
+        case 'up': return { y: 30 };
+        case 'down': return { y: -30 };
+        case 'left': return { x: 30 };
+        case 'right': return { x: -30 };
+        default: return { y: 30 };
+      }
+    };
+
+    return {
+      hidden: { 
+        opacity: 0,
+        ...directionOffset()
+      },
+      visible: { 
+        opacity: 1,
+        ...(direction.includes('y') ? { y: 0 } : { x: 0 })
+      }
+    };
+  };
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once, amount }}
       transition={{ 
-        duration: 0.6, 
+        duration, 
+        delay,
         ease: [0.22, 1, 0.36, 1] 
       }}
+      variants={getVariants()}
       className={className}
     >
       {children}

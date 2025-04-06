@@ -3,12 +3,13 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ExternalLink, Globe, Database, ArrowLeft, ArrowRight, X, Image as ImageIcon, Smartphone } from 'lucide-react';
+import { ExternalLink, Globe, Database, ArrowLeft, ArrowRight, X, Image as ImageIcon, Smartphone, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ProjectDialog from './ProjectDialog';
 import FusionsyncContent from './project-details/FusionsyncContent';
 import IoTWaterContent from './project-details/IoTWaterContent';
 import SmartGroceryContent from './project-details/SmartGroceryContent';
+import ScrollAnimationWrapper from './ScrollAnimationWrapper';
 import { 
   Carousel, 
   CarouselContent, 
@@ -18,6 +19,8 @@ import {
 } from '@/components/ui/carousel';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 
+type ProjectType = 'self' | 'university' | 'all';
+
 interface Project {
   id: string;
   title: string;
@@ -25,6 +28,7 @@ interface Project {
   year: string;
   tags: string[];
   icon: React.ReactNode;
+  projectType: ProjectType;
   images?: string[]; // Array of image URLs for the gallery
 }
 
@@ -55,6 +59,7 @@ const projects: Project[] = [
     year: "2025",
     tags: ["Mobile App", "Meal Planning", "Inventory Management"],
     icon: <Smartphone className="h-5 w-5" />,
+    projectType: 'self',
     images: projectGalleryImages["smart-grocery"]
   },
   {
@@ -64,6 +69,7 @@ const projects: Project[] = [
     year: "2024",
     tags: ["Data Synchronization", "API Integration", "Template System"],
     icon: <Database className="h-5 w-5" />,
+    projectType: 'university',
     images: projectGalleryImages.fusionsync
   },
   {
@@ -73,6 +79,7 @@ const projects: Project[] = [
     year: "2024",
     tags: ["IoT", "Water Management", "Embedded Systems"],
     icon: <Globe className="h-5 w-5" />,
+    projectType: 'university',
     images: projectGalleryImages["iot-water"]
   }
 ];
@@ -84,6 +91,11 @@ const ProjectsSection = () => {
   const [selectedProjectForGallery, setSelectedProjectForGallery] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [projectTypeFilter, setProjectTypeFilter] = useState<ProjectType>('all');
+
+  const filteredProjects = projectTypeFilter === 'all' 
+    ? projects 
+    : projects.filter(project => project.projectType === projectTypeFilter);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -187,6 +199,15 @@ const ProjectsSection = () => {
     ? projects.find(p => p.id === selectedProjectForGallery)?.images || []
     : [];
 
+  const getProjectTypeLabel = (type: ProjectType): string => {
+    switch (type) {
+      case 'self': return 'Self Project';
+      case 'university': return 'University Project';
+      case 'all': return 'All Projects';
+      default: return 'Project';
+    }
+  };
+
   return (
     <section id="projects" className="py-20 relative">
       <div className="container mx-auto px-4">
@@ -198,9 +219,36 @@ const ProjectsSection = () => {
         >
           <Badge className="mb-4" variant="outline">Portfolio</Badge>
           <h2 className="text-3xl md:text-4xl font-bold">Notable Projects</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mt-4">
+          <p className="text-muted-foreground max-w-2xl mx-auto mt-4 mb-8">
             Showcasing my technical capabilities through innovative projects that solve real-world problems.
           </p>
+
+          <div className="flex justify-center gap-3 mb-8">
+            <Button 
+              variant={projectTypeFilter === 'all' ? 'default' : 'outline'} 
+              size="sm"
+              onClick={() => setProjectTypeFilter('all')}
+              className="flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" /> All Projects
+            </Button>
+            <Button 
+              variant={projectTypeFilter === 'self' ? 'default' : 'outline'} 
+              size="sm"
+              onClick={() => setProjectTypeFilter('self')}
+              className="flex items-center gap-2"
+            >
+              <Badge variant="self" className="h-2 w-2 p-0" /> Self Projects
+            </Button>
+            <Button 
+              variant={projectTypeFilter === 'university' ? 'default' : 'outline'} 
+              size="sm"
+              onClick={() => setProjectTypeFilter('university')}
+              className="flex items-center gap-2"
+            >
+              <Badge variant="university" className="h-2 w-2 p-0" /> University Projects
+            </Button>
+          </div>
         </motion.div>
 
         <motion.div
@@ -212,68 +260,75 @@ const ProjectsSection = () => {
           <Carousel 
             opts={{
               align: "start",
-              loop: projects.length > 2,
+              loop: filteredProjects.length > 2,
             }}
             className="w-full"
           >
             <CarouselContent>
-              {projects.map((project) => (
+              {filteredProjects.map((project, index) => (
                 <CarouselItem key={project.id} className="md:basis-1/2 lg:basis-1/2 xl:basis-1/3">
-                  <motion.div variants={itemVariants} className="group h-full">
-                    <Card className="h-full group-hover:shadow-lg transition-all duration-300 overflow-hidden border border-border hover:border-accent">
-                      <div className="absolute top-0 right-0 w-40 h-40 bg-accent/5 rounded-full -translate-y-20 translate-x-20 group-hover:bg-accent/10 transition-all duration-500"></div>
-                      
-                      <CardHeader className="pb-2 relative">
-                        <div className="flex justify-between items-start">
-                          <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10 text-accent">
-                            {project.icon}
-                          </div>
-                          <Badge variant="outline" className="text-xs">
-                            {project.year}
-                          </Badge>
-                        </div>
-                        <CardTitle className="mt-4 group-hover:text-accent transition-all">
-                          {project.title}
-                        </CardTitle>
-                      </CardHeader>
-                      
-                      <CardContent className="text-muted-foreground relative">
-                        <p>{project.description}</p>
+                  <ScrollAnimationWrapper delay={index * 0.1} direction={index % 2 === 0 ? 'up' : 'down'}>
+                    <motion.div variants={itemVariants} className="group h-full">
+                      <Card className="h-full group-hover:shadow-lg transition-all duration-300 overflow-hidden border border-border hover:border-accent">
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-accent/5 rounded-full -translate-y-20 translate-x-20 group-hover:bg-accent/10 transition-all duration-500"></div>
                         
-                        <div className="flex flex-wrap gap-2 mt-4">
-                          {project.tags.map((tag) => (
-                            <span 
-                              key={tag} 
-                              className="skill-pill"
+                        <CardHeader className="pb-2 relative">
+                          <div className="flex justify-between items-start">
+                            <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10 text-accent">
+                              {project.icon}
+                            </div>
+                            <div className="flex gap-2">
+                              <Badge variant={project.projectType} className="text-xs">
+                                {getProjectTypeLabel(project.projectType)}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs">
+                                {project.year}
+                              </Badge>
+                            </div>
+                          </div>
+                          <CardTitle className="mt-4 group-hover:text-accent transition-all">
+                            {project.title}
+                          </CardTitle>
+                        </CardHeader>
+                        
+                        <CardContent className="text-muted-foreground relative">
+                          <p>{project.description}</p>
+                          
+                          <div className="flex flex-wrap gap-2 mt-4">
+                            {project.tags.map((tag) => (
+                              <span 
+                                key={tag} 
+                                className="skill-pill"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          
+                          {project.images && project.images.length > 0 && (
+                            <div 
+                              className="mt-4 flex items-center gap-2 cursor-pointer hover:text-accent transition-colors"
+                              onClick={() => openGallery(project.id)}
                             >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
+                              <ImageIcon size={16} />
+                              <span className="text-sm font-medium">View Gallery ({project.images.length} images)</span>
+                            </div>
+                          )}
+                        </CardContent>
                         
-                        {project.images && project.images.length > 0 && (
-                          <div 
-                            className="mt-4 flex items-center gap-2 cursor-pointer hover:text-accent transition-colors"
-                            onClick={() => openGallery(project.id)}
+                        <CardFooter className="pt-4 relative">
+                          <Button 
+                            variant="outline" 
+                            className="gap-2"
+                            onClick={() => handleLearnMore(project.id)}
                           >
-                            <ImageIcon size={16} />
-                            <span className="text-sm font-medium">View Gallery ({project.images.length} images)</span>
-                          </div>
-                        )}
-                      </CardContent>
-                      
-                      <CardFooter className="pt-4 relative">
-                        <Button 
-                          variant="outline" 
-                          className="gap-2"
-                          onClick={() => handleLearnMore(project.id)}
-                        >
-                          <ExternalLink size={16} />
-                          <span>Learn More</span>
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </motion.div>
+                            <ExternalLink size={16} />
+                            <span>Learn More</span>
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    </motion.div>
+                  </ScrollAnimationWrapper>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -302,6 +357,7 @@ const ProjectsSection = () => {
         </motion.div>
       </div>
 
+      {/* Project Dialog */}
       {selectedProjectData && (
         <ProjectDialog 
           isOpen={!!selectedProject}
