@@ -121,7 +121,7 @@ const HeroSection = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-background/50 p-4 rounded-xl hover-lift">
                     <div className="font-bold">Projects</div>
-                    <div className="text-3xl font-bold text-accent">2+</div>
+                    <div className="text-3xl font-bold text-accent">3+</div>
                   </div>
                   <div className="bg-background/50 p-4 rounded-xl hover-lift">
                     <div className="font-bold">Experience</div>

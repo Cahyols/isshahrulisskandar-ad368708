@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
@@ -55,6 +54,7 @@ const experiences: Experience[] = [
     ],
     icon: <Coffee className="h-5 w-5" />,
     category: 'service',
+    tag: 'Current',
     status: 'Part-time'
   },
   {

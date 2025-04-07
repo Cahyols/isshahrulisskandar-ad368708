@@ -19,7 +19,8 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
+    // Form will be handled by Netlify
+    // but we still show the success message for better UX
     setTimeout(() => {
       toast({
         title: "Message sent successfully!",
@@ -29,7 +30,7 @@ const ContactSection = () => {
       setEmail('');
       setMessage('');
       setIsSubmitting(false);
-    }, 1500);
+    }, 1000);
   };
 
   const contentVariants = {
@@ -135,13 +136,29 @@ const ContactSection = () => {
               Send Me a Message
             </motion.h3>
             
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form 
+              name="contact" 
+              method="POST" 
+              data-netlify="true"
+              netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
+              {/* Hidden input for Netlify form handling */}
+              <input type="hidden" name="form-name" value="contact" />
+              <p className="hidden">
+                <label>
+                  Don't fill this out if you're human: <input name="bot-field" />
+                </label>
+              </p>
+              
               <motion.div variants={itemVariants}>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
                   Your Name
                 </label>
                 <Input
                   id="name"
+                  name="name"
                   type="text"
                   placeholder="John Doe"
                   value={name}
@@ -157,6 +174,7 @@ const ContactSection = () => {
                 </label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="john@example.com"
                   value={email}
@@ -172,6 +190,7 @@ const ContactSection = () => {
                 </label>
                 <Textarea
                   id="message"
+                  name="message"
                   placeholder="Hello, I'd like to talk about..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
